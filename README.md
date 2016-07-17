@@ -1,3 +1,3 @@
-# froala-editor-node-sdk
+# Node.js SDK for Froala Editor
 
-Readme
+Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor) inclusion in Node.js projects
