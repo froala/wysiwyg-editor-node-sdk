@@ -1,0 +1,31 @@
+{
+  "name": "froala-editor-node-sdk",
+  "version": "0.0.1",
+  "description": "Node.js SDK for Froala Editor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/florinpopescu/froala-editor-node-sdk.git"
+  },
+  "keywords": [
+    "froala",
+    "editor",
+    "node.js",
+    "sdk"
+  ],
+  "author": "Florin Marius Popescu <florin.popescu0110@gmail.com> (https://www.froala.com/)",
+  "license": "https://froala.com/wysiwyg-editor/terms/",
+  "bugs": {
+    "url": "https://github.com/florinpopescu/froala-editor-node-sdk/issues"
+  },
+  "dependencies": {
+    "busboy": "~0.2.13",
+    "merge": "~1.2.0",
+    "sha1": "~1.1.1",
+    "express": "~4.14.0",
+    "cors": "~2.7.1"
+  }
+}
