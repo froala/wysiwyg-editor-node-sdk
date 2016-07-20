@@ -2,7 +2,7 @@
   "name": "froala-editor-node-sdk",
   "version": "0.0.1",
   "description": "Node.js SDK for Froala Editor",
-  "main": "index.js",
+  "main": "lib/editor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
