@@ -110,7 +110,8 @@
       })
 
       // Catch image removal from the editor.
-      .on('froalaEditor.file.unlink', function (e, editor, $file) {
+      .on('froalaEditor.file.unlink', function (e, editor, link) {
+
         $.ajax({
           // Request method.
           method: "POST",
@@ -120,7 +121,7 @@
 
           // Request params.
           data: {
-            src: $file.attr('src')
+            src: link.getAttribute('href')
           }
         })
         .done (function (data) {
@@ -154,7 +155,7 @@
     });
   </script>
 
-  <div class="sample">
+  <!--div class="sample">
     <h2>Sample 3: Save to Amazon using signature version 4</h2>
     <form>
       <textarea id="edit-amazon-v4" name="content"></textarea>
@@ -173,7 +174,7 @@
         })
       });
     });
-  </script>
+  </script-->
 </body>
 
 </html>
