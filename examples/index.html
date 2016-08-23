@@ -135,7 +135,78 @@
   </script>
 
   <div class="sample">
-    <h2>Sample 2: Save to Amazon using signature version 2</h2>
+    <h2>Sample 2: Save to disk (resize on server)</h2>
+    <form>
+      <textarea id="edit-resize" name="content"></textarea>
+    </form>
+  </div>
+  <script>
+    $(function() {
+      $('#edit-resize').froalaEditor({
+
+        imageUploadURL: '/upload_image_resize',
+        imageUploadParams: {
+          id: 'my_editor'
+        },
+
+        fileUploadURL: '/upload_file',
+        fileUploadParams: {
+          id: 'my_editor'
+        },
+
+        imageManagerLoadURL: '/load_images',
+        imageManagerDeleteURL: "/delete_image",
+        imageManagerDeleteMethod: "POST"
+      })
+      // Catch image removal from the editor.
+      .on('froalaEditor.image.removed', function (e, editor, $img) {
+        $.ajax({
+          // Request method.
+          method: "POST",
+
+          // Request URL.
+          url: "/delete_image",
+
+          // Request params.
+          data: {
+            src: $img.attr('src')
+          }
+        })
+        .done (function (data) {
+          console.log ('image was deleted');
+        })
+        .fail (function (err) {
+          console.log ('image delete problem: ' + JSON.stringify(err));
+        })
+      })
+
+      // Catch image removal from the editor.
+      .on('froalaEditor.file.unlink', function (e, editor, link) {
+
+        $.ajax({
+          // Request method.
+          method: "POST",
+
+          // Request URL.
+          url: "/delete_file",
+
+          // Request params.
+          data: {
+            src: link.getAttribute('href')
+          }
+        })
+        .done (function (data) {
+          console.log ('file was deleted');
+        })
+        .fail (function (err) {
+          console.log ('file delete problem: ' + JSON.stringify(err));
+        })
+      })
+    });
+  </script>
+
+  <div class="sample">
+    <h2>Sample 3: Save to Amazon using signature version 2</h2>
     <form>
       <textarea id="edit-amazon-v2" name="content"></textarea>
     </form>

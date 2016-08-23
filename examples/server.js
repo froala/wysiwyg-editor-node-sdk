@@ -24,6 +24,20 @@ app.post('/upload_image', function (req, res) {
   });
 });
 
+app.post('/upload_image_resize', function (req, res) {
+
+  var options = {
+    resize: ['50', '50']
+  }
+  FroalaEditor.Image.upload(req, options, function(err, data) {
+
+    if (err) {
+      return res.send(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+});
+
 app.post('/upload_file', function (req, res) {
 
   FroalaEditor.File.upload(req, null, function(err, data) {
