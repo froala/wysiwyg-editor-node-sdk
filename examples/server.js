@@ -64,7 +64,7 @@ app.post('/delete_image', function (req, res) {
 app.post('/delete_file', function (req, res) {
 
   FroalaEditor.File.delete(req.body.src, function(err) {
-    
+
     if (err) {
       return res.status(404).end(JSON.stringify(err));
     }
@@ -75,7 +75,7 @@ app.post('/delete_file', function (req, res) {
 app.get('/load_images', function (req, res) {
 
   FroalaEditor.Image.list('/uploads/', function(err, data) {
-    
+
     if (err) {
       return res.status(404).end(JSON.stringify(err));
     }
@@ -86,32 +86,31 @@ app.get('/load_images', function (req, res) {
 app.get('/get_amazon_v2_configs', function (req, res) {
 
   var configs = {
-    bucket: 'testv2',
+    bucket: 'froala-dev',
     region: 's3',
     keyStart: 'editor/',
     acl: 'public-read',
-    awsAccessKey: '',
-    awsSecretAccessKey: ''
+    awsAccessKey: process.env.AWS_ACCESS_KEY,
+    awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   }
 
   var configsObj = FroalaEditor.S3.getHashV2(configs);
   res.send(configsObj);
 });
 
-/*app.get('/get_amazon_v4_configs', function (req, res) {
+app.get('/get_amazon_v4_configs', function (req, res) {
 
   var configs = {
-    bucket: 'testv4',
-    region: 's3-eu-central-1',
+    bucket: 'froala-dev-v4',
+    region: 'eu-central-1',
     keyStart: 'editor/',
-    acl: 'public-read',
-    awsAccessKey: '',
-    awsSecretAccessKey: ''
+    accessKey: process.env.AWS_ACCESS_KEY,
+    secretKey: process.env.AWS_SECRET_ACCESS_KEY
   }
 
   var configsObj = FroalaEditor.S3.getHashV4(configs);
   res.send(configsObj);
-});*/
+});
 
 // Create folder for uploading files.
 var filesDir = path.join(path.dirname(require.main.filename), 'uploads');
