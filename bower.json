@@ -1,0 +1,21 @@
+{
+  "name": "froala-editor-node-sdk",
+  "version": "2.3.4-rc.1",
+  "author": "Florin Marius Popescu <florin@froala.com> (https://www.froala.com/)",
+  "description": "Node.js SDK for Froala Editor",
+  "keywords": [
+    "froala",
+    "editor",
+    "node.js",
+    "sdk"
+  ],
+  "license": "https://froala.com/wysiwyg-editor/terms/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "froala-wysiwyg-editor": "^2.3.4"
+  }
+}
