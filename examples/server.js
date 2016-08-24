@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
 
 app.post('/upload_image', function (req, res) {
 
-  FroalaEditor.Image.upload(req, null, function(err, data) {
+  FroalaEditor.Image.upload(req, function(err, data) {
 
     if (err) {
       return res.send(JSON.stringify(err));
@@ -41,7 +41,7 @@ app.post('/upload_image_resize', function (req, res) {
 
 app.post('/upload_file', function (req, res) {
 
-  FroalaEditor.File.upload(req, null, function(err, data) {
+  FroalaEditor.File.upload(req, function(err, data) {
 
     if (err) {
       return res.status(404).end(JSON.stringify(err));
@@ -86,12 +86,12 @@ app.get('/load_images', function (req, res) {
 app.get('/get_amazon_v2_configs', function (req, res) {
 
   var configs = {
-    bucket: 'froala-dev',
-    region: 's3',
-    keyStart: 'editor/',
-    acl: 'public-read',
-    awsAccessKey: process.env.AWS_ACCESS_KEY,
-    awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    bucket: process.env.AWS_BUCKET,
+    region: process.env.AWS_REGION,
+    keyStart: process.env.AWS_KEY_START,
+    acl: process.env.AWS_ACL,
+    accessKey: process.env.AWS_ACCESS_KEY,
+    secretKey: process.env.AWS_SECRET_ACCESS_KEY
   }
 
   var configsObj = FroalaEditor.S3.getHashV2(configs);
@@ -101,9 +101,10 @@ app.get('/get_amazon_v2_configs', function (req, res) {
 app.get('/get_amazon_v4_configs', function (req, res) {
 
   var configs = {
-    bucket: 'froala-dev-v4',
-    region: 'eu-central-1',
-    keyStart: 'editor/',
+    bucket: process.env.AWS_BUCKET,
+    region: process.env.AWS_REGION,
+    keyStart: process.env.AWS_KEY_START,
+    acl: process.env.AWS_ACL,
     accessKey: process.env.AWS_ACCESS_KEY,
     secretKey: process.env.AWS_SECRET_ACCESS_KEY
   }
