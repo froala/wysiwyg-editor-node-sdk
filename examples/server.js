@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
 
 app.post('/upload_image', function (req, res) {
 
-  FroalaEditor.Image.upload(req, function(err, data) {
+  FroalaEditor.Image.upload(req, '/uploads/', function(err, data) {
 
     if (err) {
       return res.send(JSON.stringify(err));
@@ -28,9 +28,9 @@ app.post('/upload_image', function (req, res) {
 app.post('/upload_image_resize', function (req, res) {
 
   var options = {
-    resize: ['50', '50']
+    resize: ['300', '300']
   }
-  FroalaEditor.Image.upload(req, options, function(err, data) {
+  FroalaEditor.Image.upload(req, '/uploads/', options, function(err, data) {
 
     if (err) {
       return res.send(JSON.stringify(err));
@@ -41,7 +41,11 @@ app.post('/upload_image_resize', function (req, res) {
 
 app.post('/upload_file', function (req, res) {
 
-  FroalaEditor.File.upload(req, function(err, data) {
+  var options = {
+    validation: null
+  }
+
+  FroalaEditor.File.upload(req, '/uploads/', options, function(err, data) {
 
     if (err) {
       return res.status(404).end(JSON.stringify(err));
