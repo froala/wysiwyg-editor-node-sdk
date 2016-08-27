@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser')
 var path = require('path');
 var fs = require('fs');
-var FroalaEditor = require('../lib/editor.js');
+var FroalaEditor = require('../lib/froalaEditor.js');
 
 app.use(express.static(__dirname + '/'));
 app.use('/bower_components',  express.static(path.join(__dirname, '../bower_components')));
@@ -86,8 +86,8 @@ app.get('/load_images', function (req, res) {
 app.get('/get_amazon_v2_configs', function (req, res) {
 
   var configs = {
-    bucket: process.env.AWS_BUCKET,
-    region: process.env.AWS_REGION,
+    bucket: process.env.AWS_BUCKET_V2,
+    region: process.env.AWS_REGION_V2,
     keyStart: process.env.AWS_KEY_START,
     acl: process.env.AWS_ACL,
     accessKey: process.env.AWS_ACCESS_KEY,
@@ -101,8 +101,8 @@ app.get('/get_amazon_v2_configs', function (req, res) {
 app.get('/get_amazon_v4_configs', function (req, res) {
 
   var configs = {
-    bucket: process.env.AWS_BUCKET,
-    region: process.env.AWS_REGION,
+    bucket: process.env.AWS_BUCKET_V4,
+    region: process.env.AWS_REGION_V4,
     keyStart: process.env.AWS_KEY_START,
     acl: process.env.AWS_ACL,
     accessKey: process.env.AWS_ACCESS_KEY,

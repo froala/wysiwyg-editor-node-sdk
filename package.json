@@ -3,7 +3,7 @@
   "version": "2.3.4-rc.1",
   "author": "Florin Marius Popescu <florin.popescu0110@gmail.com> (https://www.froala.com/)",
   "description": "Node.js SDK for Froala Editor",
-  "main": "lib/editor.js",
+  "main": "lib/froalaEditor.js",
   "scripts": {
     "start": "node ./examples/server.js",
     "postinstall": "bower install"
