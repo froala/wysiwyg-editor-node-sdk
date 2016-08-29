@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser')
 var path = require('path');
 var fs = require('fs');
-var FroalaEditor = require('../lib/editor.js');
+var FroalaEditor = require('../lib/froalaEditor.js');
 
 app.use(express.static(__dirname + '/'));
 app.use('/bower_components',  express.static(path.join(__dirname, '../bower_components')));
@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
 
 app.post('/upload_image', function (req, res) {
 
-  FroalaEditor.Image.upload(req, function(err, data) {
+  FroalaEditor.Image.upload(req, '/uploads/', function(err, data) {
 
     if (err) {
       return res.send(JSON.stringify(err));
@@ -28,9 +28,9 @@ app.post('/upload_image', function (req, res) {
 app.post('/upload_image_resize', function (req, res) {
 
   var options = {
-    resize: ['50', '50']
+    resize: ['300', '300']
   }
-  FroalaEditor.Image.upload(req, options, function(err, data) {
+  FroalaEditor.Image.upload(req, '/uploads/', options, function(err, data) {
 
     if (err) {
       return res.send(JSON.stringify(err));
@@ -41,7 +41,11 @@ app.post('/upload_image_resize', function (req, res) {
 
 app.post('/upload_file', function (req, res) {
 
-  FroalaEditor.File.upload(req, function(err, data) {
+  var options = {
+    validation: null
+  }
+
+  FroalaEditor.File.upload(req, '/uploads/', options, function(err, data) {
 
     if (err) {
       return res.status(404).end(JSON.stringify(err));
@@ -86,8 +90,8 @@ app.get('/load_images', function (req, res) {
 app.get('/get_amazon_v2_configs', function (req, res) {
 
   var configs = {
-    bucket: process.env.AWS_BUCKET,
-    region: process.env.AWS_REGION,
+    bucket: process.env.AWS_BUCKET_V2,
+    region: process.env.AWS_REGION_V2,
     keyStart: process.env.AWS_KEY_START,
     acl: process.env.AWS_ACL,
     accessKey: process.env.AWS_ACCESS_KEY,
@@ -101,8 +105,8 @@ app.get('/get_amazon_v2_configs', function (req, res) {
 app.get('/get_amazon_v4_configs', function (req, res) {
 
   var configs = {
-    bucket: process.env.AWS_BUCKET,
-    region: process.env.AWS_REGION,
+    bucket: process.env.AWS_BUCKET_V4,
+    region: process.env.AWS_REGION_V4,
     keyStart: process.env.AWS_KEY_START,
     acl: process.env.AWS_ACL,
     accessKey: process.env.AWS_ACCESS_KEY,

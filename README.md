@@ -8,7 +8,7 @@ Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor
 
 2. Run `npm install`
 
-3. Load `lib` directory in your project and import it: `var FroalaEditor = require('path/to/lib/editor.js');`
+3. Load `lib` directory in your project and import it: `var FroalaEditor = require('path/to/lib/froalaEditor.js');`
 
 4. To run examples: 
 * `npm start` to start a nodejs server form `examples` directory at `http://localhost:3000/`  
@@ -17,7 +17,7 @@ Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor
 
 ### Import lib
 ```javascript
-var FroalaEditor = require('path/to/lib/editor.js');
+var FroalaEditor = require('path/to/lib/froalaEditor.js');
 ```
 
 ### Upload image to disk
