@@ -183,14 +183,14 @@ FroalaEditor.Image.list(req.body.route, function(err) {
 
 ### Get Amazon S3 upload configs with v2 signature
 
-`FroalaEditor.S3.getConfigsObjForV2(configs);`
+`FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V2);`
 
-* `configs` object:
+* `config` object:
 
 ```javascript
 {
   bucket: 'bucketName',
-  region: 's3',
+  region: 'v2Region',
   keyStart: 'editor/',
   acl: 'public-read',
   awsAccessKey: 'YOUR-AMAZON-S3-PUBLIC-ACCESS-KEY',
@@ -221,7 +221,7 @@ FroalaEditor.Image.list(req.body.route, function(err) {
 ```javascript
 $(function() {
 
-  $.get( "get_amazon_v2_configs", {})
+  $.get( "get_amazon_v2_hash", {})
   .done(function( data ) {
 
     $('#edit-amazon-v2').froalaEditor({
@@ -235,25 +235,93 @@ $(function() {
 * Backend
 
 ```javascript
-app.get('/get_amazon_v2_configs', function (req, res) {
+app.get('/get_amazon_v2_hash', function (req, res) {
 
-  var configs = {
+  var config = {
     bucket: 'testv2',
-    region: 's3',
+    region: 'v2Region',
     keyStart: 'editor/',
     acl: 'public-read',
     awsAccessKey: '',
     awsSecretAccessKey: ''
   }
 
-  var configsObj = FroalaEditor.S3.getConfigsObjForV2(configs);
-  res.send(configsObj);
+  var hash = FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V2);
+  res.send(hash);
 });
 ```
 
 ### Get Amazon S3 upload configs with v4 signature 
 
-`To be done`
+`FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V4);`
+
+* `config` object:
+
+```javascript
+{
+  bucket: 'bucketName',
+  region: 'v4Region',
+  keyStart: 'editor/',
+  acl: 'public-read',
+  awsAccessKey: 'YOUR-AMAZON-S3-PUBLIC-ACCESS-KEY',
+  awsSecretAccessKey: 'YOUR-AMAZON-S3-SECRET-ACCESS-KEY'
+}
+```
+
+* returns the needed object for the editor to work with Amazon S3
+
+```javascript
+{
+  bucket: bucket,
+  region: region,
+  keyStart: keyStart,
+  params: {
+    acl: acl,
+    policy: policy,
+    'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+    'x-amz-credential': xAmzCredential,
+    'x-amz-date': xAmzDate,
+    'x-amz-signature': signature
+  }
+}
+```
+
+### Example:
+
+* Frontend
+
+```javascript
+$(function() {
+
+  $.get( "get_amazon_v4_hash", {})
+  .done(function( data ) {
+
+    $('#edit-amazon-v4').froalaEditor({
+      imageUploadToS3: data,
+      fileUploadToS3: data
+    })
+  });
+});
+```
+
+* Backend
+
+```javascript
+app.get('/get_amazon_v4_hash', function (req, res) {
+
+  var config = {
+    bucket: 'testv4',
+    region: 'v4Region',
+    keyStart: 'editor/',
+    acl: 'public-read',
+    awsAccessKey: '',
+    awsSecretAccessKey: ''
+  }
+
+  var hash = FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V4);
+  res.send(hash);
+});
+```
 
 ## License
 
