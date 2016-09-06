@@ -205,19 +205,19 @@
   </script>
 
   <div class="sample">
-    <h2>Sample 3: Save to Amazon using signature version 2</h2>
+    <h2>Sample 3: Save to Amazon using signature version 4</h2>
     <form>
-      <textarea id="edit-amazon-v2" name="content"></textarea>
+      <textarea id="edit-amazon" name="content"></textarea>
     </form>
   </div>
 
   <script>
     $(function() {
 
-      $.get( "get_amazon_v2_hash", {})
+      $.get( "get_amazon", {})
       .done(function( data ) {
 
-        $('#edit-amazon-v2').froalaEditor({
+        $('#edit-amazon').froalaEditor({
           imageUploadToS3: data,
           fileUploadToS3: data
         })
@@ -225,26 +225,6 @@
     });
   </script>
 
-  <div class="sample">
-    <h2>Sample 4: Save to Amazon using signature version 4</h2>
-    <form>
-      <textarea id="edit-amazon-v4" name="content"></textarea>
-    </form>
-  </div>
-
-  <script>
-    $(function() {
-
-      $.get( "get_amazon_v4_hash", {})
-      .done(function( data ) {
-
-        $('#edit-amazon-v4').froalaEditor({
-          imageUploadToS3: data,
-          fileUploadToS3: data
-        })
-      });
-    });
-  </script>
 </body>
 
 </html>

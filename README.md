@@ -181,86 +181,16 @@ FroalaEditor.Image.list(req.body.route, function(err) {
 });
 ```
 
-### Get Amazon S3 upload configs with v2 signature
-
-`FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V2);`
-
-* `config` object:
-
-```javascript
-{
-  bucket: 'bucketName',
-  region: 'v2Region',
-  keyStart: 'editor/',
-  acl: 'public-read',
-  awsAccessKey: 'YOUR-AMAZON-S3-PUBLIC-ACCESS-KEY',
-  awsSecretAccessKey: 'YOUR-AMAZON-S3-SECRET-ACCESS-KEY'
-}
-```
-
-* returns the needed object for the editor to work with Amazon S3
-
-```javascript
-{
-  bucket: bucket,
-  region: region,
-  keyStart: keyStart,
-  params: {
-    acl: acl,
-    AWSAccessKeyId: accessKeyId,
-    policy: policy,
-    signature: signature,
-  }
-}
-```
-
-### Example:
-
-* Frontend
-
-```javascript
-$(function() {
-
-  $.get( "get_amazon_v2_hash", {})
-  .done(function( data ) {
-
-    $('#edit-amazon-v2').froalaEditor({
-      imageUploadToS3: data,
-      fileUploadToS3: data
-    })
-  });
-});
-``` 
-
-* Backend
-
-```javascript
-app.get('/get_amazon_v2_hash', function (req, res) {
-
-  var config = {
-    bucket: 'testv2',
-    region: 'v2Region',
-    keyStart: 'editor/',
-    acl: 'public-read',
-    awsAccessKey: '',
-    awsSecretAccessKey: ''
-  }
-
-  var hash = FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V2);
-  res.send(hash);
-});
-```
-
 ### Get Amazon S3 upload configs with v4 signature 
 
-`FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V4);`
+`FroalaEditor.S3.getHash(config);`
 
 * `config` object:
 
 ```javascript
 {
   bucket: 'bucketName',
-  region: 'v4Region',
+  region: 'region',
   keyStart: 'editor/',
   acl: 'public-read',
   awsAccessKey: 'YOUR-AMAZON-S3-PUBLIC-ACCESS-KEY',
@@ -293,10 +223,10 @@ app.get('/get_amazon_v2_hash', function (req, res) {
 ```javascript
 $(function() {
 
-  $.get( "get_amazon_v4_hash", {})
+  $.get( "get_amazon", {})
   .done(function( data ) {
 
-    $('#edit-amazon-v4').froalaEditor({
+    $('#edit-amazon').froalaEditor({
       imageUploadToS3: data,
       fileUploadToS3: data
     })
@@ -307,18 +237,18 @@ $(function() {
 * Backend
 
 ```javascript
-app.get('/get_amazon_v4_hash', function (req, res) {
+app.get('/get_amazon', function (req, res) {
 
   var config = {
-    bucket: 'testv4',
-    region: 'v4Region',
+    bucket: 'test',
+    region: 'region',
     keyStart: 'editor/',
     acl: 'public-read',
     awsAccessKey: '',
     awsSecretAccessKey: ''
   }
 
-  var hash = FroalaEditor.S3.getHash(config, FroalaEditor.S3.SIGNATURE_V4);
+  var hash = FroalaEditor.S3.getHash(config);
   res.send(hash);
 });
 ```
