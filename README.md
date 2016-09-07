@@ -34,11 +34,12 @@ Properties:
 
 `validation`: default is null and it verifies if the image extension is 'gif', 'jpeg', 'jpg', 'png' or 'blob' and if the mimetype is 'image/gif', 'image/jpeg', 'image/pjpeg', 'image/x-png' or 'image/png'.
 
-It can be a function with filename, mimetype as parameters:
+It can be a function with filename, mimetype and a callback as parameters:
 
 ```javascript
-function isImageValid(filename, mimetype) {
-  //return true if the image is valid, false otherwise
+function isImageValid(filepath, mimetype, callback) {
+  // Call callback(null, true) if the image is valid, callback(null, false) otherwise.
+  // Call callback(err) if some error occurred.
 }
 ```
 
@@ -83,11 +84,12 @@ Properties:
 
 `validation`: default is null and it verifies if the file extension is 'txt', 'pdf' or 'doc' and if the mimetype is 'text/plain', 'application/msword', 'application/x-pdf' or 'application/pdf'.
 
-It can be a function with filename, mimetype as parameters:
+It can be a function with filename, mimetype and a callback as parameters:
 
 ```javascript
-function isFileValid(filename, mimetype) {
-  //return true if the file is valid, false otherwise
+function isFileValid(filepath, mimetype, callback) {
+  // Call callback(null, true) if the file is valid, callback(null, false) otherwise.
+  // Call callback(err) if some error occurred.
 }
 ```
 
