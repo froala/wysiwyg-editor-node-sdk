@@ -181,16 +181,16 @@ FroalaEditor.Image.list(req.body.route, function(err) {
 });
 ```
 
-### Get Amazon S3 upload configs with v2 signature
+### Get Amazon S3 upload configs with v4 signature 
 
-`FroalaEditor.S3.getConfigsObjForV2(configs);`
+`FroalaEditor.S3.getHash(config);`
 
-* `configs` object:
+* `config` object:
 
 ```javascript
 {
   bucket: 'bucketName',
-  region: 's3',
+  region: 'region',
   keyStart: 'editor/',
   acl: 'public-read',
   awsAccessKey: 'YOUR-AMAZON-S3-PUBLIC-ACCESS-KEY',
@@ -207,9 +207,11 @@ FroalaEditor.Image.list(req.body.route, function(err) {
   keyStart: keyStart,
   params: {
     acl: acl,
-    AWSAccessKeyId: accessKeyId,
     policy: policy,
-    signature: signature,
+    'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+    'x-amz-credential': xAmzCredential,
+    'x-amz-date': xAmzDate,
+    'x-amz-signature': signature
   }
 }
 ```
@@ -221,39 +223,35 @@ FroalaEditor.Image.list(req.body.route, function(err) {
 ```javascript
 $(function() {
 
-  $.get( "get_amazon_v2_configs", {})
+  $.get( "get_amazon", {})
   .done(function( data ) {
 
-    $('#edit-amazon-v2').froalaEditor({
+    $('#edit-amazon').froalaEditor({
       imageUploadToS3: data,
       fileUploadToS3: data
     })
   });
 });
-``` 
+```
 
 * Backend
 
 ```javascript
-app.get('/get_amazon_v2_configs', function (req, res) {
+app.get('/get_amazon', function (req, res) {
 
-  var configs = {
-    bucket: 'testv2',
-    region: 's3',
+  var config = {
+    bucket: 'test',
+    region: 'region',
     keyStart: 'editor/',
     acl: 'public-read',
     awsAccessKey: '',
     awsSecretAccessKey: ''
   }
 
-  var configsObj = FroalaEditor.S3.getConfigsObjForV2(configs);
-  res.send(configsObj);
+  var hash = FroalaEditor.S3.getHash(config);
+  res.send(hash);
 });
 ```
-
-### Get Amazon S3 upload configs with v4 signature 
-
-`To be done`
 
 ## License
 

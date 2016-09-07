@@ -87,33 +87,18 @@ app.get('/load_images', function (req, res) {
   });
 });
 
-app.get('/get_amazon_v2_configs', function (req, res) {
+app.get('/get_amazon', function (req, res) {
 
   var configs = {
-    bucket: process.env.AWS_BUCKET_V2,
-    region: process.env.AWS_REGION_V2,
+    bucket: process.env.AWS_BUCKET,
+    region: process.env.AWS_REGION,
     keyStart: process.env.AWS_KEY_START,
     acl: process.env.AWS_ACL,
     accessKey: process.env.AWS_ACCESS_KEY,
     secretKey: process.env.AWS_SECRET_ACCESS_KEY
   }
 
-  var configsObj = FroalaEditor.S3.getHashV2(configs);
-  res.send(configsObj);
-});
-
-app.get('/get_amazon_v4_configs', function (req, res) {
-
-  var configs = {
-    bucket: process.env.AWS_BUCKET_V4,
-    region: process.env.AWS_REGION_V4,
-    keyStart: process.env.AWS_KEY_START,
-    acl: process.env.AWS_ACL,
-    accessKey: process.env.AWS_ACCESS_KEY,
-    secretKey: process.env.AWS_SECRET_ACCESS_KEY
-  }
-
-  var configsObj = FroalaEditor.S3.getHashV4(configs);
+  var configsObj = FroalaEditor.S3.getHash(configs);
   res.send(configsObj);
 });
 
