@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser')
 var path = require('path');
 var fs = require('fs');
+var gm = require('gm').subClass({imageMagick: true});
 var FroalaEditor = require('../lib/froalaEditor.js');
 
 app.use(express.static(__dirname + '/'));
@@ -39,10 +40,74 @@ app.post('/upload_image_resize', function (req, res) {
   });
 });
 
+app.post('/upload_image_validation', function (req, res) {
+
+  var options = {
+    fieldname: 'myImage',
+    validation: function(filePath, mimetype, callback) {
+
+      gm(filePath).size(function(err, value){
+
+        if (err) {
+          return callback(err);
+        }
+
+        if (!value) {
+          return callback('Error occurred.');
+        }
+
+        if (value.width != value.height) {
+          return callback(null, false);
+        }
+        return callback(null, true);
+      });
+    }
+  }
+
+  FroalaEditor.Image.upload(req, '/uploads/', options, function(err, data) {
+
+    if (err) {
+      return res.send(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+});
+
 app.post('/upload_file', function (req, res) {
 
   var options = {
     validation: null
+  }
+
+  FroalaEditor.File.upload(req, '/uploads/', options, function(err, data) {
+
+    if (err) {
+      return res.status(404).end(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+});
+
+app.post('/upload_file_validation', function (req, res) {
+
+  var options = {
+    fieldname: 'myFile',
+    validation: function(filePath, mimetype, callback) {
+
+      fs.stat(filePath, function(err, stat) {
+
+        if(err) {
+          return callback(err);
+        }
+
+        if (stat.size > 10 * 1024 * 1024) { // > 10M
+          return callback(null, false);
+        }
+
+        return callback(null, true);
+
+      });
+    }
   }
 
   FroalaEditor.File.upload(req, '/uploads/', options, function(err, data) {
