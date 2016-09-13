@@ -1,7 +1,7 @@
 {
-  "name": "froala-editor-node-sdk",
+  "name": "wysiwyg-editor-node-sdk",
   "version": "2.3.4-rc.1",
-  "author": "Florin Marius Popescu <florin.popescu0110@gmail.com> (https://www.froala.com/)",
+  "author": "Florin Marius Popescu <florin@froala.com> (https://www.froala.com/)",
   "description": "Node.js SDK for Froala Editor",
   "main": "lib/froalaEditor.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/florinpopescu/froala-editor-node-sdk.git"
+    "url": "https://github.com/froala/wysiwyg-editor-node-sdk.git"
   },
   "keywords": [
     "froala",
@@ -18,10 +18,11 @@
     "node.js",
     "sdk"
   ],
-  "license": "https://froala.com/wysiwyg-editor/terms/",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/florinpopescu/froala-editor-node-sdk/issues"
+    "url": "https://github.com/froala/wysiwyg-editor-node-sdk/issues"
   },
+  "homepage": "https://www.froala.com/wysiwyg-editor",
   "dependencies": {
     "busboy": "~0.2.13",
     "crypto-js": "^3.1.6",

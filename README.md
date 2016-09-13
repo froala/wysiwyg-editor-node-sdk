@@ -1,263 +1,37 @@
-# Node.js SDK for Froala Editor
+# Froala WYSIWYG Editor Node.JS SDK
 
-Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor) inclusion in Node.js projects
+Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor) server side integration in Node.JS projects.
 
 ## Installation
 
 1. Clone this repo or download the zip.
 
-2. Run `npm install`
+2. Run `npm install`.
+
+3. (Optional) Run `bower install` to install the editor JS.
 
 3. Load `lib` directory in your project and import it: `var FroalaEditor = require('path/to/lib/froalaEditor.js');`
 
-4. To run examples: 
-* `npm start` to start a nodejs server form `examples` directory at `http://localhost:3000/`  
+4. To run examples:
+* `npm start` to start a nodejs server form `examples` directory at `http://localhost:3000/`
 
-## Usage
-
-### Import lib
+## Import lib
 ```javascript
 var FroalaEditor = require('path/to/lib/froalaEditor.js');
 ```
 
-### Upload image to disk
+## Documentation
 
-`FroalaEditor.Image.upload(req, options, callback);`
+ * [Official documentation](https://www.froala.com/wysiwyg-editor/docs/sdks/nodejs)
 
-* `req` http multipart request stream
+## Help
+- Found a bug or have some suggestions? Just submit an issue.
+- Having trouble with your integration? [Contact Froala Support team](http://froala.dev/wysiwyg-editor/contact).
 
-* `options` object (can be `null`)
-
-Properties:
-
-`fileRoute`: default is '/uploads/'. It represents the public location where your files will be stored, eg: www.site.com/uploads/.
-
-`validation`: default is null and it verifies if the image extension is 'gif', 'jpeg', 'jpg', 'png' or 'blob' and if the mimetype is 'image/gif', 'image/jpeg', 'image/pjpeg', 'image/x-png' or 'image/png'.
-
-It can be a function with filename, mimetype and a callback as parameters:
-
-```javascript
-function isImageValid(filepath, mimetype, callback) {
-  // Call callback(null, true) if the image is valid, callback(null, false) otherwise.
-  // Call callback(err) if some error occurred.
-}
-```
-
-* `callback` function(err, data):
-
-`err` is `null` if no error occured
-
-`data` is the object that needs to be sent back to the editor: `{link: 'link/to/image'}`.
-
-* If fileRoute is '/uploads/' and image name is image.png then the link will be '/uploads/image.png'. 
-
-The link should be public in your server so you can access it. With express you can achieve it like this:
-
-```javascript
-var express = require('express');
-var app = express();
-app.use(express.static(__dirname + '/uploads/'));
-```
-
-Example:
-```javascript
-FroalaEditor.Image.upload(req, null, function(err, data) {
-
-  if (err) {
-    return res.send(err);
-  }
-  res.send(data);
-});
-```
-
-### Upload file to disk
-
-`FroalaEditor.File.upload(req, options, callback);`
-
-* `req` http multipart request stream
-
-* `options` object (can be `null`)
-
-Properties:
-
-`fileRoute`: default is '/uploads/'. It represents the public location where your files will be stored, eg: www.site.com/uploads/.
-
-`validation`: default is null and it verifies if the file extension is 'txt', 'pdf' or 'doc' and if the mimetype is 'text/plain', 'application/msword', 'application/x-pdf' or 'application/pdf'.
-
-It can be a function with filename, mimetype and a callback as parameters:
-
-```javascript
-function isFileValid(filepath, mimetype, callback) {
-  // Call callback(null, true) if the file is valid, callback(null, false) otherwise.
-  // Call callback(err) if some error occurred.
-}
-```
-
-* `callback` function(err, data):
-
-`err` is `null` if no error occured
-
-`data` is the object that needs to be sent back to the editor: `{link: 'link/to/file'}`.
-
-* If fileRoute is '/uploads/' and file name is file.pdf then the link will be '/uploads/file.pdf'. 
-
-The link should be public in your server so you can access it. With express you can achieve it like this:
-
-```javascript
-var express = require('express');
-var app = express();
-app.use(express.static(__dirname + '/uploads/'));
-```
-
-Example:
-```javascript
-FroalaEditor.File.upload(req, {fileRoute: '/uploads/pdfs/'}, function(err, data) {
-
-  if (err) {
-    return res.status(404).end(err);
-  }
-  res.send(data);
-});
-```
-
-### Delete image from disk
-
-`FroalaEditor.Image.delete(link, callback);`
-
-* `link` public link to image
-
-* `callback` function(err):
-
-`err` is `null` if no error occured
-
-Example:
-```javascript
-FroalaEditor.Image.delete(req.body.src, function(err) {
-
-  if (err) {
-    return res.status(404).end(err);
-  }
-  return res.end();
-});
-```
-
-### Delete file from disk
-
-`FroalaEditor.File.delete(link, callback);`
-
-* `link` public link to file
-
-* `callback` function(err):
-
-`err` is `null` if no error occured
-
-Example:
-```javascript
-FroalaEditor.File.delete(req.body.src, function(err) {
-
-  if (err) {
-    return res.status(404).end(err);
-  }
-  return res.end();
-});
-```
-
-### Load images into [Image Manager](https://www.froala.com/wysiwyg-editor/docs/concepts/image-manager)
-
-`FroalaEditor.Image.list(route, callback);`
-
-* `route` public route to image. If the image link is '/uploads/image.png' then the route is '/uploads/'
-
-* `callback` function(err):
-
-`err` is `null` if no error occured
-
-Example:
-```javascript
-FroalaEditor.Image.list(req.body.route, function(err) {
-
-  if (err) {
-    return res.status(404).end(err);
-  }
-  return res.end();
-});
-```
-
-### Get Amazon S3 upload configs with v4 signature 
-
-`FroalaEditor.S3.getHash(config);`
-
-* `config` object:
-
-```javascript
-{
-  bucket: 'bucketName',
-  region: 'region',
-  keyStart: 'editor/',
-  acl: 'public-read',
-  awsAccessKey: 'YOUR-AMAZON-S3-PUBLIC-ACCESS-KEY',
-  awsSecretAccessKey: 'YOUR-AMAZON-S3-SECRET-ACCESS-KEY'
-}
-```
-
-* returns the needed object for the editor to work with Amazon S3
-
-```javascript
-{
-  bucket: bucket,
-  region: region,
-  keyStart: keyStart,
-  params: {
-    acl: acl,
-    policy: policy,
-    'x-amz-algorithm': 'AWS4-HMAC-SHA256',
-    'x-amz-credential': xAmzCredential,
-    'x-amz-date': xAmzDate,
-    'x-amz-signature': signature
-  }
-}
-```
-
-### Example:
-
-* Frontend
-
-```javascript
-$(function() {
-
-  $.get( "get_amazon", {})
-  .done(function( data ) {
-
-    $('#edit-amazon').froalaEditor({
-      imageUploadToS3: data,
-      fileUploadToS3: data
-    })
-  });
-});
-```
-
-* Backend
-
-```javascript
-app.get('/get_amazon', function (req, res) {
-
-  var config = {
-    bucket: 'test',
-    region: 'region',
-    keyStart: 'editor/',
-    acl: 'public-read',
-    awsAccessKey: '',
-    awsSecretAccessKey: ''
-  }
-
-  var hash = FroalaEditor.S3.getHash(config);
-  res.send(hash);
-});
-```
 
 ## License
 
-The `froala-editor-node-sdk` project is under MIT license. However, in order to use Froala WYSIWYG HTML Editor plugin you should purchase a license for it.
+The Froala WYSIWYG Editor Node.JS SDK is licensed under MIT license. However, in order to use Froala WYSIWYG HTML Editor plugin you should purchase a license for it.
 
 Froala Editor has [3 different licenses](http://froala.com/wysiwyg-editor/pricing) for commercial use.
 For details please see [License Agreement](http://froala.com/wysiwyg-editor/terms).
