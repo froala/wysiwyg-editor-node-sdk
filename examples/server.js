@@ -29,7 +29,7 @@ app.post('/upload_image', function (req, res) {
 app.post('/upload_image_resize', function (req, res) {
 
   var options = {
-    resize: ['300', '300']
+    resize: [300, 300]
   }
   FroalaEditor.Image.upload(req, '/uploads/', options, function(err, data) {
 
