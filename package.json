@@ -5,8 +5,7 @@
   "description": "Node.js SDK for Froala Editor",
   "main": "lib/froalaEditor.js",
   "scripts": {
-    "start": "node ./examples/server.js",
-    "postinstall": "bower install"
+    "start": "node ./examples/server.js"
   },
   "repository": {
     "type": "git",
