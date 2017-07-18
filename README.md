@@ -1,5 +1,9 @@
 # Froala WYSIWYG Editor Node.JS SDK
 
+[![npm](https://img.shields.io/npm/v/wysiwyg-editor-node-sdk.svg)](https://www.npmjs.com/package/wysiwyg-editor-node-sdk)
+[![npm](https://img.shields.io/npm/dm/wysiwyg-editor-node-sdk.svg)](https://www.npmjs.com/package/wysiwyg-editor-node-sdk)
+[![npm](https://img.shields.io/npm/l/wysiwyg-editor-node-sdk.svg)](https://www.npmjs.com/package/wysiwyg-editor-node-sdk)
+
 Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor) server side integration in Node.JS projects.
 
 ## Installation
