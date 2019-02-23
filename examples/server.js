@@ -26,6 +26,17 @@ app.post('/upload_image', function (req, res) {
   });
 });
 
+app.post('/upload_video', function (req, res) {
+
+  FroalaEditor.Video.upload(req, '/uploads/', function(err, data) {
+
+    if (err) {
+      return res.send(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+});
+
 app.post('/upload_image_resize', function (req, res) {
 
   var options = {
@@ -122,6 +133,16 @@ app.post('/upload_file_validation', function (req, res) {
 app.post('/delete_image', function (req, res) {
 
   FroalaEditor.Image.delete(req.body.src, function(err) {
+
+    if (err) {
+      return res.status(404).end(JSON.stringify(err));
+    }
+    return res.end();
+  });
+});
+app.post('/delete_video', function (req, res) {
+
+  FroalaEditor.Video.delete(req.body.src, function(err) {
 
     if (err) {
       return res.status(404).end(JSON.stringify(err));
