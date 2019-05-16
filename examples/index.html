@@ -54,6 +54,7 @@
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/save.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/table.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/video.min.js"></script>
+  <script src="/bower_components/froala-wysiwyg-editor/js/plugins/edit_in_popup.min.js"></script>
   <!-- End Froala -->
 
   <link rel="stylesheet" href="./app.css">
@@ -70,7 +71,7 @@
   </div>
   <script>
     $(function() {
-      $('#edit').froalaEditor({
+      var editor = new FroalaEditor('#edit', {
 
         imageUploadURL: '/upload_image',
         imageUploadParams: {
@@ -87,9 +88,9 @@
         imageManagerDeleteMethod: "POST",
 
         videoUploadURL: '/upload_video',
-      })
+      });
       // Catch image removal from the editor.
-      .on('froalaEditor.image.removed', function (e, editor, $img) {
+      editor.events.on('froalaEditor.image.removed', function (e, editor, $img) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -108,8 +109,8 @@
         .fail (function (err) {
           console.log ('image delete problem: ' + JSON.stringify(err));
         })
-      })
-      .on('froalaEditor.video.removed', function (e, editor, $video) {
+      });
+      editor.events.on('froalaEditor.video.removed', function (e, editor, $video) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -128,10 +129,10 @@
         .fail (function (err) {
           console.log ('video delete problem: ' + JSON.stringify(err));
         })
-      })
+      });
 
       // Catch image removal from the editor.
-      .on('froalaEditor.file.unlink', function (e, editor, link) {
+      editor.events.on('froalaEditor.file.unlink', function (e, editor, link) {
 
         $.ajax({
           // Request method.
@@ -163,7 +164,7 @@
   </div>
   <script>
     $(function() {
-      $('#edit-resize').froalaEditor({
+      var editor2 = new FroalaEditor('#edit-resize', {
 
         imageUploadURL: '/upload_image_resize',
         imageUploadParams: {
@@ -178,9 +179,9 @@
         imageManagerLoadURL: '/load_images',
         imageManagerDeleteURL: "/delete_image",
         imageManagerDeleteMethod: "POST"
-      })
+      });
       // Catch image removal from the editor.
-      .on('froalaEditor.image.removed', function (e, editor, $img) {
+      editor2.events.on('froalaEditor.image.removed', function (e, editor, $img) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -202,7 +203,7 @@
       })
 
       // Catch image removal from the editor.
-      .on('froalaEditor.file.unlink', function (e, editor, link) {
+      editor2.events.on('froalaEditor.file.unlink', function (e, editor, link) {
 
         $.ajax({
           // Request method.
@@ -234,7 +235,7 @@
   </div>
   <script>
     $(function() {
-      $('#edit-validation').froalaEditor({
+      var editor3 = new FroalaEditor('#edit-validation', {
 
         imageUploadURL: '/upload_image_validation',
         imageUploadParams: {
@@ -252,9 +253,9 @@
         imageManagerLoadURL: '/load_images',
         imageManagerDeleteURL: "/delete_image",
         imageManagerDeleteMethod: "POST"
-      })
+      });
       // Catch image removal from the editor.
-      .on('froalaEditor.image.removed', function (e, editor, $img) {
+      editor3.events.on('froalaEditor.image.removed', function (e, editor, $img) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -273,10 +274,10 @@
         .fail (function (err) {
           console.log ('image delete problem: ' + JSON.stringify(err));
         })
-      })
+      });
 
       // Catch image removal from the editor.
-      .on('froalaEditor.file.unlink', function (e, editor, link) {
+      editor3.events.on('froalaEditor.file.unlink', function (e, editor, link) {
 
         $.ajax({
           // Request method.
@@ -313,7 +314,7 @@
       $.get( "get_amazon", {})
       .done(function( data ) {
 
-        $('#edit-amazon').froalaEditor({
+        new FroalaEditor('#edit-amazon', {
           imageUploadToS3: data,
           fileUploadToS3: data,
           videoUploadToS3: data
