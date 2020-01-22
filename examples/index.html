@@ -257,7 +257,7 @@
         imageManagerDeleteMethod: "POST",
         events : {
        // Catch image removal from the editor.
-      'image.removed': function (e, editor, $img) {
+      'image.removed': function ($img) {
         $.ajax({
           // Request method.
           method: "POST",
