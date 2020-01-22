@@ -70,7 +70,7 @@
     </form>
   </div>
   <script>
-    $(function() {
+    (function() {
       var editor = new FroalaEditor('#edit', {
 
         imageUploadURL: '/upload_image',
@@ -86,11 +86,12 @@
         imageManagerLoadURL: '/load_images',
         imageManagerDeleteURL: "/delete_image",
         imageManagerDeleteMethod: "POST",
-
+        
         videoUploadURL: '/upload_video',
-      });
-      // Catch image removal from the editor.
-      editor.events.on('froalaEditor.image.removed', function (e, editor, $img) {
+
+        events : { 
+        // Catch image removal from the editor.
+       'image.removed': function ( $img) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -109,8 +110,9 @@
         .fail (function (err) {
           console.log ('image delete problem: ' + JSON.stringify(err));
         })
-      });
-      editor.events.on('froalaEditor.video.removed', function (e, editor, $video) {
+      },
+      // Catch video removal from the editor.
+      'video.removed': function ( $video) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -129,11 +131,9 @@
         .fail (function (err) {
           console.log ('video delete problem: ' + JSON.stringify(err));
         })
-      });
-
-      // Catch image removal from the editor.
-      editor.events.on('froalaEditor.file.unlink', function (e, editor, link) {
-
+      },
+       // Catch file removal from the editor.
+      'file.unlink':function ( link) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -152,8 +152,10 @@
         .fail (function (err) {
           console.log ('file delete problem: ' + JSON.stringify(err));
         })
-      })
-    });
+        }
+      }
+      });
+    })();
   </script>
 
   <div class="sample">
@@ -163,9 +165,9 @@
     </form>
   </div>
   <script>
-    $(function() {
+    (function() {
       var editor2 = new FroalaEditor('#edit-resize', {
-
+        
         imageUploadURL: '/upload_image_resize',
         imageUploadParams: {
           id: 'my_editor'
@@ -178,37 +180,35 @@
 
         imageManagerLoadURL: '/load_images',
         imageManagerDeleteURL: "/delete_image",
-        imageManagerDeleteMethod: "POST"
-      });
-      // Catch image removal from the editor.
-      editor2.events.on('froalaEditor.image.removed', function (e, editor, $img) {
+        imageManagerDeleteMethod: "POST",
+
+      events :{
+        // Catch image removal from the editor.
+        'image.removed': function ( $img) {
+          $.ajax({
+            // Request method.
+            method: "POST",
+
+            // Request URL.
+            url: "/delete_image",
+
+            // Request params.
+            data: {
+              src: $img.attr('src')
+            }
+          })
+          .done (function (data) {
+            console.log ('image was deleted');
+          })
+          .fail (function (err) {
+            console.log ('image delete problem: ' + JSON.stringify(err));
+          })
+        },
+        // Catch file removal from the editor.
+        'file.unlink': function ( link) {
         $.ajax({
           // Request method.
           method: "POST",
-
-          // Request URL.
-          url: "/delete_image",
-
-          // Request params.
-          data: {
-            src: $img.attr('src')
-          }
-        })
-        .done (function (data) {
-          console.log ('image was deleted');
-        })
-        .fail (function (err) {
-          console.log ('image delete problem: ' + JSON.stringify(err));
-        })
-      })
-
-      // Catch image removal from the editor.
-      editor2.events.on('froalaEditor.file.unlink', function (e, editor, link) {
-
-        $.ajax({
-          // Request method.
-          method: "POST",
-
           // Request URL.
           url: "/delete_file",
 
@@ -223,8 +223,10 @@
         .fail (function (err) {
           console.log ('file delete problem: ' + JSON.stringify(err));
         })
-      })
-    });
+        }
+        }
+      });  
+    })();
   </script>
 
   <div class="sample">
@@ -234,7 +236,7 @@
     </form>
   </div>
   <script>
-    $(function() {
+    (function() {
       var editor3 = new FroalaEditor('#edit-validation', {
 
         imageUploadURL: '/upload_image_validation',
@@ -252,10 +254,10 @@
 
         imageManagerLoadURL: '/load_images',
         imageManagerDeleteURL: "/delete_image",
-        imageManagerDeleteMethod: "POST"
-      });
-      // Catch image removal from the editor.
-      editor3.events.on('froalaEditor.image.removed', function (e, editor, $img) {
+        imageManagerDeleteMethod: "POST",
+        events : {
+       // Catch image removal from the editor.
+      'image.removed': function ($img) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -274,11 +276,9 @@
         .fail (function (err) {
           console.log ('image delete problem: ' + JSON.stringify(err));
         })
-      });
-
+      },
       // Catch image removal from the editor.
-      editor3.events.on('froalaEditor.file.unlink', function (e, editor, link) {
-
+      'file.unlink': function (link) {
         $.ajax({
           // Request method.
           method: "POST",
@@ -297,8 +297,10 @@
         .fail (function (err) {
           console.log ('file delete problem: ' + JSON.stringify(err));
         })
-      })
-    });
+        }
+        }
+      }); 
+    })();
   </script>
 
   <div class="sample">
@@ -309,18 +311,18 @@
   </div>
 
   <script>
-    $(function() {
+    (function() {
 
       $.get( "get_amazon", {})
       .done(function( data ) {
-
+        
         new FroalaEditor('#edit-amazon', {
           imageUploadToS3: data,
           fileUploadToS3: data,
           videoUploadToS3: data
         })
       });
-    });
+    })();
   </script>
 
 </body>
