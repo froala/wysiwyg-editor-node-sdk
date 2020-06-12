@@ -83,7 +83,65 @@ app.post('/upload_image_validation', function (req, res) {
     res.send(data);
   });
 });
+app.post('/upload_files', function (req, res) {
 
+  var options = {
+    validation: null
+  }
+
+  FroalaEditor.Files.upload(req, '/uploads/', options, function (err, data) {
+
+    if (err) {
+      return res.status(404).end(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+});
+app.post('/upload_files_validation', function (req, res) {
+  var options = {
+  
+    fieldname: 'myImage',
+    validation: function (filePath, mimetype, callback) {
+
+      gm(filePath).size(function (err, value) {
+
+        if (err) {
+          return callback(err);
+        }
+
+        if (!value) {
+          return callback('Error occurred.');
+        }
+
+        if (value.width != value.height) {
+          return callback(null, false);
+        }
+        return callback(null, true);
+      });
+    }
+  }
+
+  FroalaEditor.Files.upload(req, '/uploads/', options, function (err, data) {
+
+    if (err) {
+      return res.status(404).end(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+});
+app.post('/upload_files_resize', function (req, res) {
+
+  var options = {
+    resize: [100, 300]
+  }
+  FroalaEditor.Image.upload(req, '/uploads/', options, function (err, data) {
+
+    if (err) {
+      return res.send(JSON.stringify(err));
+    }
+    res.send(data);
+  });
+})
 app.post('/upload_file', function (req, res) {
 
   var options = {
