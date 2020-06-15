@@ -115,6 +115,27 @@
           console.log ('image delete problem: ' + JSON.stringify(err));
         })
       },
+      // Catch file removal from files manager.
+      'filesManager.removed': function ( link) {
+        $.ajax({
+          // Request method.
+          method: "POST",
+
+          // Request URL.
+          url: "/delete_files",
+
+          // Request params.
+          data: {
+            src: link
+          }
+        })
+        .done (function (data) {
+          console.log ('file was deleted from files manager popup');
+        })
+        .fail (function (err) {
+          console.log ('file delete problem from files manager popup: ' + JSON.stringify(err));
+        })
+      },
       // Catch video removal from the editor.
       'video.removed': function ( $video) {
         $.ajax({
@@ -210,6 +231,27 @@
             console.log ('image delete problem: ' + JSON.stringify(err));
           })
         },
+        // Catch file removal from files manager.
+      'filesManager.removed': function ( link) {
+        $.ajax({
+          // Request method.
+          method: "POST",
+
+          // Request URL.
+          url: "/delete_files",
+
+          // Request params.
+          data: {
+            src: link
+          }
+        })
+        .done (function (data) {
+          console.log ('file was deleted from files manager popup');
+        })
+        .fail (function (err) {
+          console.log ('file delete problem from files manager popup: ' + JSON.stringify(err));
+        })
+      },
         // Catch file removal from the editor.
         'file.unlink': function ( link) {
         $.ajax({
@@ -283,6 +325,27 @@
         })
         .fail (function (err) {
           console.log ('image delete problem: ' + JSON.stringify(err));
+        })
+      },
+      // Catch file removal from files manager.
+      'filesManager.removed': function ( link) {
+        $.ajax({
+          // Request method.
+          method: "POST",
+
+          // Request URL.
+          url: "/delete_files",
+
+          // Request params.
+          data: {
+            src: link
+          }
+        })
+        .done (function (data) {
+          console.log ('file was deleted from files manager popup');
+        })
+        .fail (function (err) {
+          console.log ('file delete problem from files manager popup: ' + JSON.stringify(err));
         })
       },
       // Catch image removal from the editor.

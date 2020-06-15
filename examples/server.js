@@ -220,6 +220,17 @@ app.post('/delete_file', function (req, res) {
   });
 });
 
+app.post('/delete_files', function (req, res) {
+
+  FroalaEditor.Files.delete(req.body.src, function(err) {
+
+    if (err) {
+      return res.status(404).end(JSON.stringify(err));
+    }
+    return res.end();
+  });
+});
+
 app.get('/load_images', function (req, res) {
 
   FroalaEditor.Image.list('/uploads/', function(err, data) {
