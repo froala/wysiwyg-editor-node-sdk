@@ -257,6 +257,19 @@ app.get('/get_amazon', function (req, res) {
   res.send(configsObj);
 });
 
+app.get('/get_azure', function (req, res) {
+
+  var configs = {
+    account: process.env.AZURE_ACCOUNT,
+    container: process.env.AZURE_CONTAINER,
+    accessKey: process.env.AZURE_ACCESS_KEY,
+    SASToken: process.env.AZURE_SAS_TOKEN,
+    uploadURL: process.env.AZURE_UPLOAD_URL
+  }
+
+  res.send(configs);
+});
+
 // Create folder for uploading files.
 var filesDir = path.join(path.dirname(require.main.filename), 'uploads');
 if (!fs.existsSync(filesDir)){

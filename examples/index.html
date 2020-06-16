@@ -37,6 +37,7 @@
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/code_beautifier.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/code_view.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>
+  <script src="/bower_components/froala-wysiwyg-editor/js/plugins/cryptojs.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/emoticons.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/entities.min.js"></script>
   <script src="/bower_components/froala-wysiwyg-editor/js/plugins/file.min.js"></script>
@@ -391,6 +392,29 @@
           imageUploadToS3: data,
           fileUploadToS3: data,
           videoUploadToS3: data
+        })
+      });
+    })();
+  </script>
+
+  <div class="sample">
+    <h2>Sample 5: Save to Azure using access key or SAS token.</h2>
+    <form>
+      <textarea id="edit-azure" name="content"></textarea>
+    </form>
+  </div>
+
+  <script>
+    (function() {
+
+      $.get( "get_azure", {})
+      .done(function( data ) {
+        
+        new FroalaEditor('#edit-azure', {
+          filesManagerUploadToAzure: data,
+          imageUploadToAzure: data,
+          fileUploadToAzure: data,
+          videoUploadToAzure: data
         })
       });
     })();
