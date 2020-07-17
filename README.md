@@ -31,6 +31,9 @@ var FroalaEditor = require('path/to/lib/froalaEditor.js');
 
  * [Official documentation](https://www.froala.com/wysiwyg-editor/docs/sdks/nodejs)
 
+ #### Note
+ > Third-party plugins are not supported
+
 ## Help
 - Found a bug or have some suggestions? Just submit an issue.
 - Having trouble with your integration? [Contact Froala Support team](http://froala.dev/wysiwyg-editor/contact).
