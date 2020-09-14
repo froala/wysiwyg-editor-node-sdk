@@ -7,7 +7,7 @@
 Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor) server side integration in Node.JS projects.
 
 ## Prerequisite
-1. ImageMagick must be installed.
+1. ImageMagick must be installed. Note: It must be installed with "Install legacy utilities" option checked during the setup.
 
 ## Installation
 
