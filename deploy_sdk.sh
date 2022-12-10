@@ -8,7 +8,7 @@ export DEPLOYMENT_SERVER=""
 SERVICE_NAME=""
 CONTAINER_NAME=""
 CT_INDEX=0
-AO_IDENTIFIER='csi08092022'
+AO_IDENTIFIER= `echo ${TRAVIS_BRANCH}`
 echo "${AO_IDENTIFIER}"
 OLDEST_CONTAINER=""
 echo "${SSH_KEY}"  | base64 --decode > /tmp/sshkey.pem
