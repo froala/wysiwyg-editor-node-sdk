@@ -154,4 +154,3 @@ else
 	echo "Deploying service ..."
 	deploy_service
 fi
-
