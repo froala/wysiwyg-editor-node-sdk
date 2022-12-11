@@ -36,7 +36,7 @@ DEPL='ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem '
 DEPL="${DEPL}  ${SSH_USER}@${DEPLOYMENT_SERVER} "
 REL=' " sudo docker ps | grep -i ' 
 DEPL="${DEPL} ${REL} "
-DEPL="${DEPL} ${LW_REPO_NAME} "
+DEPL="${DEPL} ${LW_REPO_NAME}-${AO_IDENTIFIER}"
 REL='"'
 DEPL="${DEPL} ${REL} "
 echo "show docker containers ssh cmd:  $DEPL"
@@ -134,7 +134,7 @@ if [ ${REDEPLOYMENT} -eq 1 ]; then
 	echo "Redeploying service: ${SERVICE_NAME} ..."
 	deploy_service
 fi
-EXISTING_DEPLOYMENTS=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps  | grep -i "${LW_REPO_NAME}" | wc -l" `
+EXISTING_DEPLOYMENTS=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps  | grep -i "${LW_REPO_NAME}-${AO_IDENTIFIER}" | wc -l" `
 if [ ${EXISTING_DEPLOYMENTS} -gt ${MAX_DEPLOYMENTS_NR} ]; then
 	echo "Maximum deployments reached  on ${SDK_ENVIRONMENT} environment for ${BUILD_REPO_NAME}  ; existing deployments: ${EXISTING_DEPLOYMENTS} ; max depl: ${MAX_DEPLOYMENTS_NR} "
 	echo "Stopping container  ${OLDEST_CONTAINER} ..."
