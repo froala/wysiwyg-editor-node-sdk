@@ -128,7 +128,7 @@ else
 fi
 }  
 
-REDEPLOYMENT=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i "${DEPLOYMENT_IS_RUNNING}" | wc -l" `
+REDEPLOYMENT=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i "${DEPLOYMENT_IS_RUNNING}-${AO_IDENTIFIER}" | wc -l" `
 echo "${DEPLOYMENT_IS_RUNNING}"
 echo "checking if this PRD exists & do redeploy: ${REDEPLOYMENT}"
 if [ ${REDEPLOYMENT} -eq 1 ]; then 
