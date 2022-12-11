@@ -3,7 +3,6 @@
 if [ ${TRAVIS_PULL_REQUEST} != "false" ];  then echo "Not deploying on a pull request !!!" && exit 0; fi
 PACKAGE_VERSION=`jq '.version' version.json | tr -d '"'`
 export IMAGE_NAME=`echo "froala-${BUILD_REPO_NAME}_${TRAVIS_BRANCH}:${PACKAGE_VERSION}" | tr '[:upper:]' '[:lower:]'`
-DEPLOYMENT_IS_RUNNING=`echo "${BUILD_REPO_NAME}_${TRAVIS_BRANCH}" | tr '[:upper:]' '[:lower:]'`
 export BASE_DOMAIN="froala-infra.com"
 export SDK_ENVIRONMENT=""
 export DEPLOYMENT_SERVER=""
@@ -126,8 +125,8 @@ else
 	echo " Service available at URL: https://${DEPLOYMENT_URL}"
 	exit 0
 fi
-}  
-
+}
+DEPLOYMENT_IS_RUNNING=`echo "${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_LOWER_INDEX}" | tr '[:upper:]' '[:lower:]'`
 REDEPLOYMENT=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i "${DEPLOYMENT_IS_RUNNING}-${AO_IDENTIFIER}" | wc -l" `
 echo "${DEPLOYMENT_IS_RUNNING}"
 echo "checking if this PRD exists & do redeploy: ${REDEPLOYMENT}"
