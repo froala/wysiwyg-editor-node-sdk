@@ -123,7 +123,7 @@ if [ $RET_CODE -ne 200 ]; then
 	exit -1 
 else 
 	echo " Service available at URL: https://${DEPLOYMENT_URL}"
-	exit 0
+
 fi
 }
 DEPLOYMENT_IS_RUNNING=`echo "${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_LOWER_INDEX}" | tr '[:upper:]' '[:lower:]'`
