@@ -31,4 +31,3 @@ notifications:
       - harasunu.narayan@froala.com
     on_success: always
     on_failure: always
-    
