@@ -1,64 +1,70 @@
 #!/bin/bash
 
 if [ ${TRAVIS_PULL_REQUEST} != "false" ];  then echo "Not deploying on a pull request !!!" && exit 0; fi
+
 PACKAGE_VERSION=`jq '.version' version.json | tr -d '"'`
 export IMAGE_NAME=`echo "froala-${BUILD_REPO_NAME}_${TRAVIS_BRANCH}:${PACKAGE_VERSION}" | tr '[:upper:]' '[:lower:]'`
 export BASE_DOMAIN="froala-infra.com"
 export SDK_ENVIRONMENT=""
 export DEPLOYMENT_SERVER=""
+
 SERVICE_NAME=""
 CONTAINAER_NAME=""
 CT_INDEX=0
 AO_IDENTIFIER=`echo ${TRAVIS_BRANCH}`
 echo "${AO_IDENTIFIER}"
 OLDEST_CONTAINER=""
+
 echo "${SSH_KEY}"  | base64 --decode > /tmp/sshkey.pem
 chmod 400 /tmp/sshkey.pem
+
 export MAX_DEPLOYMENTS_NR=0
+
 function get_max_deployments_per_env(){
-local ENVIRONMENT=$1
-echo "getting max deployments for environment ${ENVIRONMENT}"
-MAX_DEPLOYMENTS_NR=`jq --arg sdkenvironment ${ENVIRONMENT}  '.[$sdkenvironment]' version.json | tr -d '"'`
-echo "detected max deployments: ${MAX_DEPLOYMENTS_NR}"
+  local ENVIRONMENT=$1
+  echo "getting max deployments for environment ${ENVIRONMENT}"
+  MAX_DEPLOYMENTS_NR=`jq --arg sdkenvironment ${ENVIRONMENT}  '.[$sdkenvironment]' version.json | tr -d '"'`
+  echo "detected max deployments: ${MAX_DEPLOYMENTS_NR}"
 }
+
 function generate_container_name(){
-local LW_REPO_NAME=$1
-local LW_SHORT_TRAVIS_BRANCH=$2
-local SDK_ENVIRONMENT=$3
-local DEPLOYMENT_SERVER=$4
-echo "searching for ${LW_REPO_NAME} depl..."
-sleep 1
-RUNNING_DEPL=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps | grep -i ${LW_REPO_NAME}"`
-echo "running depl var: ${RUNNING_DEPL}"
-echo "looking for ${LW_REPO_NAME} deployments"
-echo "getting indexes for oldest and latest deployed container"
-DEPL='ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem '
-DEPL="${DEPL}  ${SSH_USER}@${DEPLOYMENT_SERVER} "
-REL=' " sudo docker ps | grep -i ' 
-DEPL="${DEPL} ${REL} "
-DEPL="${DEPL} ${LW_REPO_NAME}-${AO_IDENTIFIER}"
-REL='"'
-DEPL="${DEPL} ${REL} "
-echo "show docker containers ssh cmd:  $DEPL"
-echo   ${DEPL}  | bash > file.txt
-echo "running conatiners: "
-cat file.txt
-CT_LOWER_INDEX=`cat file.txt | awk -F'-' '{print $NF }' | sort -nk1 | head -1`
-CT_HIGHER_INDEX=`cat file.txt | awk -F'-' '{print $NF }' | sort -nk1 | tail -1`
-echo "lowest index : ${CT_LOWER_INDEX} ; and highest index : ${CT_HIGHER_INDEX}"	
-if [ -z "${RUNNING_DEPL}" ]; then
+  local LW_REPO_NAME=$1
+  local LW_SHORT_TRAVIS_BRANCH=$2
+  local SDK_ENVIRONMENT=$3
+  local DEPLOYMENT_SERVER=$4
+  echo "searching for ${LW_REPO_NAME} depl..."
+  sleep 1
+  RUNNING_DEPL=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps | grep -i ${LW_REPO_NAME}"`
+  echo "running depl var: ${RUNNING_DEPL}"
+  echo "looking for ${LW_REPO_NAME} deployments"
+  echo "getting indexes for oldest and latest deployed container"
+  DEPL='ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem '
+  DEPL="${DEPL}  ${SSH_USER}@${DEPLOYMENT_SERVER} "
+  REL=' " sudo docker ps | grep -i ' 
+  DEPL="${DEPL} ${REL} "
+  DEPL="${DEPL} ${LW_REPO_NAME}-${AO_IDENTIFIER}"
+  REL='"'
+  DEPL="${DEPL} ${REL} "
+  echo "show docker containers ssh cmd:  $DEPL"
+  echo   ${DEPL}  | bash > file.txt
+  echo "running conatiners: "
+  cat file.txt
+  CT_LOWER_INDEX=`cat file.txt | awk -F'-' '{print $NF }' | sort -nk1 | head -1`
+  CT_HIGHER_INDEX=`cat file.txt | awk -F'-' '{print $NF }' | sort -nk1 | tail -1`
+  echo "lowest index : ${CT_LOWER_INDEX} ; and highest index : ${CT_HIGHER_INDEX}"	
+  if [ -z "${RUNNING_DEPL}" ]; then
 	echo "first deployment"
 	CT_INDEX=1
 	CONTAINER_NAME="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_INDEX}"
 	SERVICE_NAME="${LW_REPO_NAME}-${LW_SHORT_TRAVIS_BRANCH}" 
-else
+  else
     echo "multiple deployments"
 	CT_INDEX=${CT_HIGHER_INDEX} && CT_INDEX=$((CT_INDEX+1))
 	OLDEST_CONTAINER="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_LOWER_INDEX}"
 	CONTAINER_NAME="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_INDEX}"
 	SERVICE_NAME="${LW_REPO_NAME}-${LW_SHORT_TRAVIS_BRANCH}-${CT_INDEX}"
 	echo "new index: ${CT_INDEX}  & oldest horse out there: ${OLDEST_CONTAINER}"
-fi
+  fi
 }
 echo " Container port: ${CONTAINER_SERVICE_PORTNO}"
 export BRANCH_NAME=`echo "${TRAVIS_BRANCH}" | tr '[:upper:]' '[:lower:]'`
@@ -108,23 +114,23 @@ LW_REPO_NAME_LENGTH=`echo ${LW_REPO_NAME} |awk '{print length}'`
 SHORT_SERVICE_NAME="${SERVICE_NAME:0:$LW_REPO_NAME_LENGTH}"
 echo "short service name: ${SHORT_SERVICE_NAME}"
 function deploy_service(){
-ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down; fi"
-ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} "if [ -d /services/${SERVICE_NAME} ];  then rm -rf /services/${SERVICE_NAME}; fi && mkdir /services/${SERVICE_NAME}"
-scp  -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem docker-compose.yml ${SSH_USER}@${DEPLOYMENT_SERVER}:/services/${SERVICE_NAME}/docker-compose.yml
-ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " cd /services/${SERVICE_NAME}/ && sudo docker-compose pull"
-ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " cd /services/${SERVICE_NAME}/ && sudo docker-compose up -d"
-sleep 10 && ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i ${SERVICE_NAME}" 
-echo "Docker-compose is in : /services/${SERVICE_NAME} "
-sleep 30
-RET_CODE=`curl -k -s -o /tmp/notimportant.txt -w "%{http_code}" https://${DEPLOYMENT_URL}`
-echo "validation code: $RET_CODE for  https://${DEPLOYMENT_URL}"
-if [ $RET_CODE -ne 200 ]; then 
+  ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down; fi"
+  ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} "if [ -d /services/${SERVICE_NAME} ];  then rm -rf /services/${SERVICE_NAME}; fi && mkdir /services/${SERVICE_NAME}"
+  scp  -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem docker-compose.yml ${SSH_USER}@${DEPLOYMENT_SERVER}:/services/${SERVICE_NAME}/docker-compose.yml
+  ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " cd /services/${SERVICE_NAME}/ && sudo docker-compose pull"
+  ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " cd /services/${SERVICE_NAME}/ && sudo docker-compose up -d"
+  sleep 10 && ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i ${SERVICE_NAME}" 
+  echo "Docker-compose is in : /services/${SERVICE_NAME} "
+  sleep 30
+  RET_CODE=`curl -k -s -o /tmp/notimportant.txt -w "%{http_code}" https://${DEPLOYMENT_URL}`
+  echo "validation code: $RET_CODE for  https://${DEPLOYMENT_URL}"
+  if [ $RET_CODE -ne 200 ]; then 
 	echo "Deployment validation failed!!! Please check pipeline logs." 
 	exit -1 
-else 
+  else 
 	echo " Service available at URL: https://${DEPLOYMENT_URL}"
 
-fi
+  fi
 }
 DEPLOYMENT_IS_RUNNING=`echo "${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_LOWER_INDEX}" | tr '[:upper:]' '[:lower:]'`
 REDEPLOYMENT=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i "${DEPLOYMENT_IS_RUNNING}-${AO_IDENTIFIER}" | wc -l" `
