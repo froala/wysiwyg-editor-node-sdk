@@ -149,23 +149,23 @@ if [ "${EXISTING_DEPLOYMENTS}" -gt "${MAX_DEPLOYMENTS_NR}" ]; then
 	echo "Stopping container  ${OLDEST_CONTAINER} ..."
   
   if ! ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker stop "${OLDEST_CONTAINER}"; then
-    echo "Failed to stop the ${OLDEST_CONTAINER} container"
+  echo "Failed to stop the ${OLDEST_CONTAINER} container"
   fi
   echo "Successfully stopped the ${OLDEST_CONTAINER} container."
 
   if ! ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker rm "${OLDEST_CONTAINER}"; then
-    echo "Failed to remove the ${OLDEST_CONTAINER} container"
+  echo "Failed to remove the ${OLDEST_CONTAINER} container"
   fi
   echo "Successfully removed the ${OLDEST_CONTAINER} container."
 
   echo "Deploying the service: ${SERVICE_NAME}"
   if ! deploy_service; then
-    echo "Failed to deploy the service ${SERVICE_NAME}"
+  echo "Failed to deploy the service ${SERVICE_NAME}"
   fi
   echo "${SERVICE_NAME} has been deployed."
   sleep 30
 
 else 
-	echo "Deploying service ..."
-	deploy_service
+echo "Deploying service ..."
+deploy_service
 fi
