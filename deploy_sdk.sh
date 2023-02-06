@@ -121,7 +121,7 @@ function deploy_service(){
   ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " cd /services/${SERVICE_NAME}/ && sudo docker-compose up -d"
   sleep 10 && ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps -a | grep -i ${SERVICE_NAME}" 
   echo "Docker-compose is in : /services/${SERVICE_NAME} "
-  sleep 30
+  sleep 60
   RET_CODE=`curl -k -s -o /tmp/notimportant.txt -w "%{http_code}" https://${DEPLOYMENT_URL}`
   echo "validation code: $RET_CODE for  https://${DEPLOYMENT_URL}"
   if [ $RET_CODE -ne 200 ]; then 
@@ -140,21 +140,31 @@ if [ ${REDEPLOYMENT} -eq 1 ]; then
 	echo "Redeploying service: ${SERVICE_NAME} ..."
 	deploy_service
 fi
+
 EXISTING_DEPLOYMENTS=`ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem ${SSH_USER}@${DEPLOYMENT_SERVER} " sudo docker ps  | grep -i "${LW_REPO_NAME}-${AO_IDENTIFIER}" | wc -l" `
-if [ ${EXISTING_DEPLOYMENTS} -gt ${MAX_DEPLOYMENTS_NR} ]; then
+
+if [ "${EXISTING_DEPLOYMENTS}" -gt "${MAX_DEPLOYMENTS_NR}" ]; then
+
 	echo "Maximum deployments reached  on ${SDK_ENVIRONMENT} environment for ${BUILD_REPO_NAME}  ; existing deployments: ${EXISTING_DEPLOYMENTS} ; max depl: ${MAX_DEPLOYMENTS_NR} "
 	echo "Stopping container  ${OLDEST_CONTAINER} ..."
-	RCMD='ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem  '
-	RCMD="${RCMD} ${SSH_USER}@${DEPLOYMENT_SERVER} "
-	REM='" sudo docker stop '
-	RCMD="${RCMD} $REM ${OLDEST_CONTAINER}"'"'
-    echo $RCMD | bash
-	sleep 12
-	RCMD='ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem  '
-	RCMD="${RCMD} ${SSH_USER}@${DEPLOYMENT_SERVER} "
-	REM='" sudo docker rm '
-	RCMD="${RCMD} $REM ${OLDEST_CONTAINER}"'"'	
-	echo $RCMD | bash 
+  
+  if ! ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker stop "${OLDEST_CONTAINER}"; then
+    echo "Failed to stop the ${OLDEST_CONTAINER} container"
+  fi
+  echo "Successfully stopped the ${OLDEST_CONTAINER} container."
+
+  if ! ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker rm "${OLDEST_CONTAINER}"; then
+    echo "Failed to remove the ${OLDEST_CONTAINER} container"
+  fi
+  echo "Successfully removed the ${OLDEST_CONTAINER} container."
+
+  echo "Deploying the service: ${SERVICE_NAME}"
+  if ! deploy_service; then
+    echo "Failed to deploy the service ${SERVICE_NAME}"
+  fi
+  echo "${SERVICE_NAME} has been deployed."
+  sleep 30
+
 else 
 	echo "Deploying service ..."
 	deploy_service
