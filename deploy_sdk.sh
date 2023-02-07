@@ -119,6 +119,11 @@ function deploy_service(){
     sed -i "s/PortNum/${CONTAINER_SERVICE_PORTNO}/g" docker-compose.yml
     sed -i "s/ContainerName/${CONTAINER_NAME}/g" docker-compose.yml
 
+    echo "-------------------------------------------------"
+    echo "Below is the contect of docker-compose.yml"
+    echo "-------------------------------------------------"
+    cat docker-compose.yml
+
     # Run docker-compose down on deployment_server
     ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down -v --rmi all; fi"
     

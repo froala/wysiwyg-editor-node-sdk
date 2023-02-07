@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   ServiceName:
-    restart: unless-stopped
+    restart: always
     image: ImageName
     container_name: ContainerName
     pull_policy: always
