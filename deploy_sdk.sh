@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x 
-
 # Steps
     # Identify the build agent. Check whether build agent is same as deployment server
     # Login to build server and build, run, check the new changes.
