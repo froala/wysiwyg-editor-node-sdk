@@ -106,7 +106,7 @@ generate_container_name "${LW_REPO_NAME}" "${LW_SHORT_TRAVIS_BRANCH}" "${DEPLOYM
 # Set the deployment URL
 # export DEPLOYMENT_URL="${SHORT_REPO_NAME}-${SHORT_TRAVIS_BRANCH}-${CT_INDEX}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
 # export DEPLOYMENT_URL="${SHORT_REPO_NAME}-${SHORT_TRAVIS_BRANCH}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
-export DEPLOYMENT_SERVER="${CONTAINER_NAME}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
+export DEPLOYMENT_URL="${CONTAINER_NAME}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
 
 # Modify the compose file and run the docker-compose.
 function deploy_service(){
