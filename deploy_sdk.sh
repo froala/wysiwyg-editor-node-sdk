@@ -55,18 +55,17 @@ LW_SHORT_TRAVIS_BRANCH="$(echo "${SHORT_TRAVIS_BRANCH}" | sed -e 's/-//g' -e 's/
 function max_allowed_deployment(){
     echo "getting max deployments for environment ${SDK_ENVIRONMENT}"
     MAX_DEPLOYMENTS_NR=$(jq --arg sdkenvironment "${SDK_ENVIRONMENT}"  '.[$sdkenvironment]' version.json | tr -d '"')
-    echo "detected max deployments: ${MAX_DEPLOYMENTS_NR}"
+    echo "Max allowed deployments: ${MAX_DEPLOYMENTS_NR}"
 }
 max_allowed_deployment
-echo "Selected environment :${SDK_ENVIRONMENT}, deployment server ${DEPLOYMENT_SERVER}, max allowed deployments: ${MAX_DEPLOYMENTS_NR}"
 
 # Get the total numbers of deployed container for given environment
-function no_of_current_deployment(){
-    echo "Checking the current number of running container(s)"
-    CURRENT_DEPLOYMENTS_NR=$(ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "sudo docker ps | grep -i ${LW_REPO_NAME}-${AO_IDENTIFIER}" | wc -l)
-    echo "Number of current deployment: ${CURRENT_DEPLOYMENTS_NR}"
+function existing_deployments(){
+    echo "Checking the existing number of running container(s)"
+    EXISTING_DEPLOYMENTS_NR=$(ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "sudo docker ps | grep -i ${LW_REPO_NAME}-${AO_IDENTIFIER}" | wc -l)
+    echo "Number of existing deployment: ${EXISTING_DEPLOYMENTS_NR}"
 }
-no_of_current_deployment
+existing_deployments
 
 # Get the old container name, no of deployments, and generate the new index and container name
 function generate_container_name(){
@@ -81,12 +80,12 @@ function generate_container_name(){
     echo "Lowest index : ${CT_LOWER_INDEX} ; and Highest index : ${CT_HIGHER_INDEX}"	
 
     if [ -z "${DEPL}" ]; then
-        echo "first deployment"
+        echo "First deployment. Setting the container name."
         CT_INDEX=1
         CONTAINER_NAME="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_INDEX}"
         SERVICE_NAME="${LW_REPO_NAME}-${LW_SHORT_TRAVIS_BRANCH}" 
     else
-        echo "multiple deployments"
+        echo "Multiple deployments detected. Setting the container name (old and new)"
         CT_INDEX=${CT_HIGHER_INDEX} && CT_INDEX=$((CT_INDEX+1))
         OLDEST_CONTAINER="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_LOWER_INDEX}"
         CONTAINER_NAME="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_INDEX}"
@@ -96,6 +95,18 @@ function generate_container_name(){
 }
 generate_container_name
 
+# Print useful details.
+echo -e "\n"
+echo "----------------------------------------------------------------------"
+echo "  Selected environment:                   ${SDK_ENVIRONMENT}.         "
+echo "  Deployment server:                      ${DEPLOYMENT_SERVER}.       "
+echo "  Max allowed deployments:                ${MAX_DEPLOYMENTS_NR}.      "
+echo "  Number of existing deployment:          ${EXISTING_DEPLOYMENTS_NR}  "
+echo "  Oldest container name:                  ${OLDEST_CONTAINER}         "
+echo "  Container name for this deployment:     ${CONTAINER_NAME}           "
+echo "----------------------------------------------------------------------"
+echo -e "\n"
+
 # Set the deployment URL
 DEPLOYMENT_URL="${CONTAINER_NAME}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
 
@@ -104,6 +115,7 @@ function deploy(){
 
     # Copy the docker-compose template to docker-compose.yml
     cp docker-compose.yml.template docker-compose.yml
+
     # Replace the sample values
     sed -i "s/ImageName/${NEXUS_CR_TOOLS_URL}\/${IMAGE_NAME}/g" docker-compose.yml
     sed -i "s/UrlName/${DEPLOYMENT_URL}/g" docker-compose.yml
@@ -111,11 +123,12 @@ function deploy(){
     sed -i "s/PortNum/${CONTAINER_SERVICE_PORTNO}/g" docker-compose.yml
     sed -i "s/ContainerName/${CONTAINER_NAME}/g" docker-compose.yml
 
-    echo "-------------------------------------------------"
+    echo -e "\n"
     echo "Below is the content of docker-compose.yml"
     echo "-------------------------------------------------"
     cat docker-compose.yml
     echo "-------------------------------------------------"
+    echo -e "\n"
 
     # Run docker-compose down on deployment_server
     # ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down -v --rmi all; fi"
@@ -123,7 +136,7 @@ function deploy(){
     # Remove the old docker-compose from deployment_server
     ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then rm -rf /services/${SERVICE_NAME}; fi && mkdir /services/${SERVICE_NAME}"
     
-    # Copy the current docker-compose file to deployment_server
+    # Copy the latest docker-compose file to deployment_server
     scp  -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem docker-compose.yml "${SSH_USER}"@"${DEPLOYMENT_SERVER}":/services/"${SERVICE_NAME}"/docker-compose.yml
 
     # Run docker-compose pull on deployment_server
@@ -140,17 +153,17 @@ function deploy(){
         echo "Deployment validation failed!!! Please check pipeline logs." 
         exit 1 
     else 
-        echo "Service available at URL: https://${DEPLOYMENT_URL}"
+        echo -e "\n\tService available at URL: https://${DEPLOYMENT_URL}\n"
     fi
 }
 
-# If current deployment less than max deployment then just deploy don't remove old container.
-if [ "${CURRENT_DEPLOYMENTS_NR}" -lt "${MAX_DEPLOYMENTS_NR}" ]; then
+# If existing deployment less than max deployment then just deploy don't remove old container.
+if [ "${EXISTING_DEPLOYMENTS_NR}" -lt "${MAX_DEPLOYMENTS_NR}" ]; then
     deploy
 fi
 
-# If current deployment equals max deployment then delete oldest container.
-if [ "${CURRENT_DEPLOYMENTS_NR}" -eq "${MAX_DEPLOYMENTS_NR}" ]; then
+# If existing deployment equals max deployment then delete oldest container.
+if [ "${EXISTING_DEPLOYMENTS_NR}" -eq "${MAX_DEPLOYMENTS_NR}" ]; then
     
     echo "Maximum deployments reached  on ${SDK_ENVIRONMENT} environment for ${BUILD_REPO_NAME}."
     echo "Stopping container  ${OLDEST_CONTAINER} ..."
