@@ -11,21 +11,20 @@
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ];  then echo "Not deploying on a pull request !!!" && exit 0; fi
 
 # Define the global variables
-export BRANCH_NAME=$(echo "${TRAVIS_BRANCH}" | tr '[:upper:]' '[:lower:]')
-export PACKAGE_VERSION="$(jq '.version' version.json | tr -d '"')"
-export IMAGE_NAME="$(echo "froala-${BUILD_REPO_NAME}_${TRAVIS_BRANCH}:${PACKAGE_VERSION}" | tr '[:upper:]' '[:lower:]')"
-export BASE_DOMAIN="froala-infra.com"
-export AO_IDENTIFIER="${TRAVIS_BRANCH}"
-export BASE_DOMAIN="froala-infra.com"
-export SHORT_REPO_NAME="${BUILD_REPO_NAME:0:17}"
-export BRANCH_LENGHT=$(echo "${TRAVIS_BRANCH}" |awk '{print length}')
-export CT_INDEX=0
-export MAX_DEPLOYMENTS_NR=0
-export SDK_ENVIRONMENT=""
-export DEPLOYMENT_SERVER=""
-export SERVICE_NAME=""
-export CONTAINAER_NAME=""
-export OLDEST_CONTAINER=""
+BRANCH_NAME=$(echo "${TRAVIS_BRANCH}" | tr '[:upper:]' '[:lower:]')
+PACKAGE_VERSION="$(jq '.version' version.json | tr -d '"')"
+IMAGE_NAME="$(echo "froala-${BUILD_REPO_NAME}_${TRAVIS_BRANCH}:${PACKAGE_VERSION}" | tr '[:upper:]' '[:lower:]')"
+BASE_DOMAIN="froala-infra.com"
+AO_IDENTIFIER="${TRAVIS_BRANCH}"
+BRANCH_LENGHT=$(echo "${TRAVIS_BRANCH}" |awk '{print length}')
+LW_REPO_NAME=$(echo "${BUILD_REPO_NAME}" | tr '[:upper:]' '[:lower:]' | sed -e 's/-//g' -e 's/\.//g' -e 's/_//g')
+CT_INDEX=0
+MAX_DEPLOYMENTS_NR=0
+SDK_ENVIRONMENT=""
+DEPLOYMENT_SERVER=""
+SERVICE_NAME=""
+CONTAINER_NAME=""
+OLDEST_CONTAINER=""
 
 # Copy the ssh key
 echo "${SSH_KEY}"  | base64 --decode > /tmp/sshkey.pem
@@ -50,42 +49,38 @@ if [ "${BRANCH_LENGHT}" -lt 18 ]; then
 else
     SHORT_TRAVIS_BRANCH="${TRAVIS_BRANCH:0:8}${TRAVIS_BRANCH: -8}"
 fi
-SHORT_TRAVIS_BRANCH="$(echo "${SHORT_TRAVIS_BRANCH}" | sed -e 's/-//g' -e 's/\.//g' -e 's/_//g')"
+LW_SHORT_TRAVIS_BRANCH="$(echo "${SHORT_TRAVIS_BRANCH}" | sed -e 's/-//g' -e 's/\.//g' -e 's/_//g' | tr '[:upper:]' '[:lower:]')"
 
 # Get the maximum allowed deployment for given environment
-function get_max_deployments_per_env(){
-    local ENVIRONMENT=$1
-    echo "getting max deployments for environment ${ENVIRONMENT}"
-    MAX_DEPLOYMENTS_NR=$(jq --arg sdkenvironment "${ENVIRONMENT}"  '.[$sdkenvironment]' version.json | tr -d '"')
+function max_allowed_deployment(){
+    echo "getting max deployments for environment ${SDK_ENVIRONMENT}"
+    MAX_DEPLOYMENTS_NR=$(jq --arg sdkenvironment "${SDK_ENVIRONMENT}"  '.[$sdkenvironment]' version.json | tr -d '"')
     echo "detected max deployments: ${MAX_DEPLOYMENTS_NR}"
 }
-get_max_deployments_per_env $SDK_ENVIRONMENT
+max_allowed_deployment
 echo "Selected environment :${SDK_ENVIRONMENT}, deployment server ${DEPLOYMENT_SERVER}, max allowed deployments: ${MAX_DEPLOYMENTS_NR}"
+
+# Get the total numbers of deployed container for given environment
+function no_of_current_deployment(){
+    echo "Checking the current number of running container(s)"
+    CURRENT_DEPLOYMENTS_NR=$(ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "sudo docker ps | grep -i ${LW_REPO_NAME}-${AO_IDENTIFIER}" | wc -l)
+    echo "Number of current deployment: ${CURRENT_DEPLOYMENTS_NR}"
+}
+no_of_current_deployment
 
 # Get the old container name, no of deployments, and generate the new index and container name
 function generate_container_name(){
-    local LW_REPO_NAME=$1
-    local LW_SHORT_TRAVIS_BRANCH=$2
-    local SDK_ENVIRONMENT=$3
-    local DEPLOYMENT_SERVER=$4
-    echo "searching for ${LW_REPO_NAME} depl..."
-
-    RUNNING_DEPL=$(ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "sudo docker ps | grep -i ${LW_REPO_NAME}")
-    echo "running depl var: ${RUNNING_DEPL}"
-    echo "looking for ${LW_REPO_NAME} deployments"
-    echo "getting indexes for oldest and latest deployed container"
 
     DEPL=$(ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker ps | grep -i "${LW_REPO_NAME}"-"${AO_IDENTIFIER}")
-    echo "show docker containers ssh cmd:  ${DEPL}"
+    echo "Containers running for ${AO_IDENTIFIER}:  ${DEPL}"
     echo "${DEPL}" > file.txt
-    echo "running conatiners: "
-    cat file.txt
 
+    echo "Getting indexes of oldest and latest deployed containers for ${AO_IDENTIFIER}"
     CT_LOWER_INDEX=$(awk -F'-' '{print $NF }' < file.txt | sort -nk1 | head -1)
     CT_HIGHER_INDEX=$(awk -F'-' '{print $NF }' < file.txt | sort -nk1 | tail -1)
-    echo "lowest index : ${CT_LOWER_INDEX} ; and highest index : ${CT_HIGHER_INDEX}"	
+    echo "Lowest index : ${CT_LOWER_INDEX} ; and Highest index : ${CT_HIGHER_INDEX}"	
 
-    if [ -z "${RUNNING_DEPL}" ]; then
+    if [ -z "${DEPL}" ]; then
         echo "first deployment"
         CT_INDEX=1
         CONTAINER_NAME="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_INDEX}"
@@ -99,17 +94,13 @@ function generate_container_name(){
         echo "New index: ${CT_INDEX}, Old container: ${OLDEST_CONTAINER}"
     fi
 }
-LW_REPO_NAME=$(echo "${BUILD_REPO_NAME}" | tr '[:upper:]' '[:lower:]' | sed -e 's/-//g' -e 's/\.//g' -e 's/_//g')
-LW_SHORT_TRAVIS_BRANCH=$(echo "${SHORT_TRAVIS_BRANCH}" | tr '[:upper:]' '[:lower:]')
-generate_container_name "${LW_REPO_NAME}" "${LW_SHORT_TRAVIS_BRANCH}" "${DEPLOYMENT_SERVER}" "${DEPLOYMENT_SERVER}" 
+generate_container_name
 
 # Set the deployment URL
-# export DEPLOYMENT_URL="${SHORT_REPO_NAME}-${SHORT_TRAVIS_BRANCH}-${CT_INDEX}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
-# export DEPLOYMENT_URL="${SHORT_REPO_NAME}-${SHORT_TRAVIS_BRANCH}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
-export DEPLOYMENT_URL="${CONTAINER_NAME}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
+DEPLOYMENT_URL="${CONTAINER_NAME}.${SDK_ENVIRONMENT}.${BASE_DOMAIN}"
 
 # Modify the compose file and run the docker-compose.
-function deploy_service(){
+function deploy(){
 
     # Copy the docker-compose template to docker-compose.yml
     cp docker-compose.yml.template docker-compose.yml
@@ -121,12 +112,14 @@ function deploy_service(){
     sed -i "s/ContainerName/${CONTAINER_NAME}/g" docker-compose.yml
 
     echo "-------------------------------------------------"
-    echo "Below is the contect of docker-compose.yml"
+    echo "Below is the content of docker-compose.yml"
     echo "-------------------------------------------------"
     cat docker-compose.yml
+    echo "-------------------------------------------------"
 
+    set -x
     # Run docker-compose down on deployment_server
-    ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down -v --rmi all; fi"
+    # ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down -v --rmi all; fi"
     
     # Remove the old docker-compose from deployment_server
     ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then rm -rf /services/${SERVICE_NAME}; fi && mkdir /services/${SERVICE_NAME}"
@@ -141,7 +134,8 @@ function deploy_service(){
     # Run docker-compose up on deployment_server
     ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "cd /services/${SERVICE_NAME}/ && sudo docker-compose up -d --force-recreate"
     sleep 60
-    
+    set +x
+
     RET_CODE=$(curl -k -s -o /tmp/notimportant.txt -w "%{http_code}" https://"${DEPLOYMENT_URL}")
     echo "validation code: $RET_CODE for  https://${DEPLOYMENT_URL}"
     if [ "${RET_CODE}" -ne 200 ]; then 
@@ -151,4 +145,30 @@ function deploy_service(){
         echo "Service available at URL: https://${DEPLOYMENT_URL}"
     fi
 }
-deploy_service
+
+# If current deployment less than max deployment then just deploy don't remove old container.
+if [ "${CURRENT_DEPLOYMENTS_NR}" -lt "${MAX_DEPLOYMENTS_NR}" ]; then
+    deploy
+fi
+
+# If current deployment equals max deployment then delete oldest container.
+if [ "${CURRENT_DEPLOYMENTS_NR}" -eq "${MAX_DEPLOYMENTS_NR}" ]; then
+    
+    echo "Maximum deployments reached  on ${SDK_ENVIRONMENT} environment for ${BUILD_REPO_NAME}."
+    echo "Stopping container  ${OLDEST_CONTAINER} ..."
+  
+    if ! ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker stop "${OLDEST_CONTAINER}"; then
+        echo "Failed to stop the ${OLDEST_CONTAINER} container"
+    fi
+    echo "Successfully stopped the ${OLDEST_CONTAINER} container."
+
+    if ! ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" sudo docker rm -f "${OLDEST_CONTAINER}"; then
+        echo "Failed to remove the ${OLDEST_CONTAINER} container"
+    fi
+    echo "Successfully removed the ${OLDEST_CONTAINER} container."
+
+    echo "Deploying the service: ${SERVICE_NAME}"
+    deploy && sleep 30
+    echo "Deployment completed."
+fi
+
