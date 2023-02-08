@@ -117,7 +117,6 @@ function deploy(){
     cat docker-compose.yml
     echo "-------------------------------------------------"
 
-    set -x
     # Run docker-compose down on deployment_server
     # ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "if [ -d /services/${SERVICE_NAME} ];  then sudo docker-compose -f /services/${SERVICE_NAME}/docker-compose.yml down -v --rmi all; fi"
     
@@ -134,7 +133,6 @@ function deploy(){
     # Run docker-compose up on deployment_server
     ssh -o "StrictHostKeyChecking no" -i  /tmp/sshkey.pem "${SSH_USER}"@"${DEPLOYMENT_SERVER}" "cd /services/${SERVICE_NAME}/ && sudo docker-compose up -d --force-recreate"
     sleep 60
-    set +x
 
     RET_CODE=$(curl -k -s -o /tmp/notimportant.txt -w "%{http_code}" https://"${DEPLOYMENT_URL}")
     echo "validation code: $RET_CODE for  https://${DEPLOYMENT_URL}"
