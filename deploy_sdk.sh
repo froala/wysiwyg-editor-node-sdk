@@ -90,7 +90,7 @@ function generate_container_name(){
         OLDEST_CONTAINER="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_LOWER_INDEX}"
         CONTAINER_NAME="${LW_REPO_NAME}-${AO_IDENTIFIER}-${CT_INDEX}"
         SERVICE_NAME="${LW_REPO_NAME}-${LW_SHORT_TRAVIS_BRANCH}-${CT_INDEX}"
-        echo "New index: ${CT_INDEX}, Old container: ${OLDEST_CONTAINER}"
+        echo "New index: ${CT_INDEX}"
     fi
 }
 generate_container_name
@@ -163,7 +163,7 @@ if [ "${EXISTING_DEPLOYMENTS_NR}" -lt "${MAX_DEPLOYMENTS_NR}" ]; then
 fi
 
 # If existing deployment equals max deployment then delete oldest container.
-if [ "${EXISTING_DEPLOYMENTS_NR}" -eq "${MAX_DEPLOYMENTS_NR}" ]; then
+if [ "${EXISTING_DEPLOYMENTS_NR}" -ge "${MAX_DEPLOYMENTS_NR}" ]; then
     
     echo "Maximum deployments reached  on ${SDK_ENVIRONMENT} environment for ${BUILD_REPO_NAME}."
     echo "Stopping container  ${OLDEST_CONTAINER} ..."
