@@ -14,7 +14,7 @@ COPY . .
 
 RUN wget --no-check-certificate --user ${NexusUser}  --password ${NexusPassword} https://nexus.tools.froala-infra.com/repository/Froala-npm/${PackageName}/-/${PackageName}-${PackageVersion}.tgz
 
-RUN npm install
+RUN npm install -f
 RUN npm install -g bower
 RUN bower install --allow-root
 WORKDIR /app/examples
