@@ -30,7 +30,11 @@ jq --arg froalaeditor "./${PACKAGE_NAME}-${PACKAGE_VERSION}.tgz" '.dependencies[
 echo "verify bower package"
 cat bower.json
 
-docker build -t  ${IMAGE_NAME}:${SHORT_COMMIT} --build-arg PackageName=${PACKAGE_NAME} --build-arg PackageVersion=${PACKAGE_VERSION} --build-arg NexusUser=${NEXUS_USER} --build-arg NexusPassword=${NEXUS_USER_PWD} .
+echo "IP address of BUILD agent is: " && hostname -I
+echo "Hostname of BUILD agent is: " && hostname
+docker image prune -f
+DOCKER_BUILDKIT=0 docker build --no-cache -t ${IMAGE_NAME}:${SHORT_COMMIT} --build-arg PackageName=${PACKAGE_NAME} --build-arg PackageVersion=${PACKAGE_VERSION} --build-arg NexusUser=${NEXUS_USER} --build-arg NexusPassword=${NEXUS_USER_PWD} .
+
 sleep 3
 docker image ls 
 echo "uploading to nexus" ${PACKAGE_NAME}
