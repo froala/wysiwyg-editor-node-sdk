@@ -12,7 +12,7 @@ Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor
 ## Installation
 
 1. Clone this repo or download the zip.
-
+ 
 2. Run `npm install`.
 
 3. (Optional) Run `bower install` to install the editor JS.
