@@ -27,6 +27,6 @@
     "bower_components"
   ],
   "dependencies": {
-    "froala-wysiwyg-editor": "^5.0.1"
+    "froala-wysiwyg-editor": "^5.1.0"
   }
 }
