@@ -5,3 +5,4 @@ Dockerfile
 push-image-to-nexus.sh
 version.json
 bower_components
+.github
