@@ -76,20 +76,24 @@ jobs:
           jq --arg VERSION "$VERSION" '.version = $VERSION' bower.json > tmp.json
           mv tmp.json bower.json
 
-      - name: Commit changes
-        run: |
-          git config user.name "froala-travis-bot"
-          git config user.email "froala_git_travis_bot@idera.com"
-          git add .
-          git commit -m "chore: release v${VERSION}" || echo "Nothing to commit"
-          git push origin "$BRANCH"
+
+#      - uses: actions/setup-node@v4
+#        with:
+#          node-version: 18
+#          registry-url: https://registry.npmjs.org/
+
+#      - name: Run NPM Install
+#        run: npm install
+
+#      - name: Publish
+#        run: npm publish 
 
       - name: Commit & push
         run: |
           git config user.name "froala-travis-bot"
           git config user.email "froala_git_travis_bot@idera.com"
 
-          git add package.json bower.json
+          git add package.json bower.json 
           git commit -m "chore: release v${VERSION}" || echo "Nothing to commit"
           git push origin "$BRANCH"
 
@@ -99,16 +103,11 @@ jobs:
           RELEASE_NOTES: ${{ github.event.client_payload.release_notes }}
         run: |
           git fetch origin master
-
           if git diff --quiet origin/master..."$BRANCH"; then
             echo "No commits between $BRANCH and master. Skipping PR creation."
             exit 0
           fi
-
-          PR_BODY=$(printf \
-            "release: yes\n\n## Release Notes (from primary repo)\n\n%s\n" \
-            "$RELEASE_NOTES")
-
+          PR_BODY=$(printf "## Release Notes (from primary repo)\n\n%s\n" "$RELEASE_NOTES")
           gh pr create \
             --base master \
             --head "$BRANCH" \
