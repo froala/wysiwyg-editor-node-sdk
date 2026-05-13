@@ -4,3 +4,4 @@ examples/uploads
 npm-debug.log
 **/.DS_STORE
 package-lock.json
+collab.db**
