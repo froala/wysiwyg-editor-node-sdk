@@ -1,3 +1,4 @@
+var http = require('http');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
@@ -5,10 +6,26 @@ var path = require('path');
 var fs = require('fs');
 var gm = require('gm').subClass({imageMagick: true});
 var FroalaEditor = require('../lib/froalaEditor.js');
+var Collaborative = FroalaEditor.Collaborative;
+var CollabPersistence = FroalaEditor.CollabPersistence;
+
+// Permissive CORS for the dev environment so the editor's webpack dev server
+// (port 8001) can hit the SDK's REST endpoints (port 3000).
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
 
 app.use(express.static(__dirname + '/'));
 app.use('/bower_components',  express.static(path.join(__dirname, '../bower_components')));
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Attach suggestion + comment persistence routes.
+CollabPersistence.attachRoutes(app, { dbPath: path.join(__dirname, '..', 'collab.db') });
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -194,6 +211,16 @@ if (!fs.existsSync(filesDir)){
     fs.mkdirSync(filesDir);
 }
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+// Health endpoint — reports live room/client counts from the relay.
+app.get('/health', function (req, res) {
+  res.json(Collaborative.getStats());
+});
+
+// Wrap Express in a plain HTTP server so the WebSocket relay can share the port.
+// Clients connect to:  ws://localhost:3000/<roomName>
+var server = http.createServer(app);
+Collaborative.attachToServer(server);
+
+server.listen(3000, function () {
+  console.log('Example app + collaborative relay listening on port 3000');
 });
