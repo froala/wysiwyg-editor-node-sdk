@@ -75,9 +75,6 @@ jobs:
         run: |
           jq --arg VERSION "$VERSION" '.version = $VERSION' bower.json > tmp.json
           mv tmp.json bower.json
-          
-          jq ".dependencies[\"froala-wysiwyg-editor\"] = \"^$VERSION\"" bower.json > tmp.json
-          mv tmp.json bower.json
 
 
 #      - uses: actions/setup-node@v4
@@ -110,9 +107,7 @@ jobs:
             echo "No commits between $BRANCH and master. Skipping PR creation."
             exit 0
           fi
-
-          PR_BODY=$(printf "%s\n" "$RELEASE_NOTES")
-  
+          PR_BODY=$(printf "## Release Notes (from primary repo)\n\n%s\n" "$RELEASE_NOTES")
           gh pr create \
             --base master \
             --head "$BRANCH" \
