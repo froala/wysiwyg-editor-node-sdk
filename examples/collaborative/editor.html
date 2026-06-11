@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Plugin — Editor</title>
+
+  <script src="/bower_components/jquery/dist/jquery.min.js">
+    </script>
+
+    <!-- Include Font Awesome. -->
+    <link href="/bower_components/font-awesome/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Include Froala Editor styles -->
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/froala_editor.min.css" />
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/froala_style.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/froala_editor.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/froala_style.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/ai_assist.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/code_view.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/draggable.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/colors.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/emoticons.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/image_manager.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/image.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/line_breaker.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/table.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/char_counter.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/video.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/fullscreen.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/file.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/quick_insert.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/help.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/code_snippet.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/third_party/spell_checker.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/special_characters.css">
+    <link rel="stylesheet" href="/bower_components/froala-wysiwyg-editor/css/plugins/collaborative.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+
+    <!-- prismjs package for codeSnippet -->
+    <script type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
+    <script type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism.min.css">
+
+    <!-- Include Froala Editor -->
+    <script src="/bower_components/froala-wysiwyg-editor/js/froala_editor.min.js"></script>
+
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/xml/xml.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.7/purify.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mammoth@1.11.0/mammoth.browser.js"></script>
+
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/froala_editor.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/ai_assist.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/align.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/char_counter.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/code_beautifier.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/code_view.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/draggable.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/emoticons.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/entities.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/file.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/fullscreen.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/image.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/image_manager.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/line_breaker.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/inline_style.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/link.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/paragraph_format.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/paragraph_style.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/quick_insert.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/quote.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/table.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/save.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/url.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/video.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/help.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/print.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/third_party/spell_checker.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/special_characters.min.js"></script>
+    <script type="text/javascript" src="/bower_components/froala-wysiwyg-editor/js/plugins/word_paste.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/export_to_word.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/import_from_word.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/code_snippet.min.js"></script>
+    <script type="text/javascript"
+      src="/bower_components/froala-wysiwyg-editor/js/plugins/collaborative.min.js"></script>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="editor-page">
+
+  <header class="editor-header">
+    <div class="header-left">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#0098f7" />
+        <path d="M8 10h16M8 16h10M8 22h13" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+      <span class="app-name">Collaborative Plugin</span>
+      <span class="room-badge" id="room-badge">room</span>
+    </div>
+
+    <div class="user-chip" id="user-chip">
+      <div class="user-avatar" id="user-avatar"></div>
+      <div>
+        <div class="user-name" id="user-name-display"></div>
+        <div class="user-role" id="user-role-display"></div>
+      </div>
+      <a href="./" class="change-user">Change</a>
+    </div>
+  </header>
+
+  <main class="editor-body">
+    <div id="froala-editor"></div>
+  </main>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const user = {
+        id: params.get('id') || 'guest-' + Math.random().toString(36).slice(2, 6),
+        name: params.get('name') || 'Guest',
+        role: params.get('role') || 'editor'
+      };
+      const room = params.get('room') || 'demo-room';
+
+      document.getElementById('room-badge').textContent = room;
+      document.getElementById('user-name-display').textContent = user.name;
+      document.getElementById('user-role-display').textContent = user.role;
+
+      const avatar = document.getElementById('user-avatar');
+      avatar.textContent = user.name.charAt(0).toUpperCase();
+      avatar.style.background = '#0098f7';
+
+      document.title = `${user.name} — Collaborative Plugin`;
+
+      if (!params.get('name')) {
+        window.location.href = '/index.html';
+      }
+
+      const backendUrl = window.location.origin;
+      const syncUrl = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`;
+
+      const mode = params.get('mode') || 'realtime';
+      const versionHistory = params.get('versionHistory') === '1';
+      const autoSave = params.get('autoSave') === '1';
+      const autoSaveInterval = parseInt(params.get('autoSaveInterval')) || 300000;
+      const mentionUsersParam = params.get('mentionUsers');
+      const mentionableUsers = mentionUsersParam
+        ? mentionUsersParam.split(',').map(n => ({
+            id: n.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+            name: n.trim()
+          }))
+        : [];
+
+      const collabOptions = {
+        enabled: true,
+        user: { id: user.id, name: user.name, role: user.role },
+        room,
+        backendUrl,
+        ...(mentionableUsers.length ? { mentionableUsers } : {})
+      };
+
+      const editorConfig = { height: 600, collabOptions };
+
+      if (mode === 'realtime') {
+        editorConfig.realTimeConfig = { syncUrl };
+      } else {
+        editorConfig.saveURL = `/collab/${room}/content`;
+        editorConfig.saveInterval = 10000;
+        editorConfig.events = {
+          initialized: function () {
+            const editor = this;
+            fetch(`${backendUrl}/collab/${room}/content`)
+              .then(res => res.ok ? res.json() : null)
+              .then(data => { if (data && data.content) editor.html.set(data.content); })
+              .catch(() => {});
+          }
+        };
+      }
+
+      if (versionHistory) {
+        editorConfig.versionHistoryOptions = {
+          enabled: true,
+          autoSaveEnabled: autoSave,
+          ...(autoSave ? { autoSaveInterval } : {})
+        };
+      }
+
+      new FroalaEditor('#froala-editor', editorConfig);
+
+    })();
+  </script>
+</body>
+
+</html>

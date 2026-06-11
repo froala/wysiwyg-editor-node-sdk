@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Plugin — Join Session</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="login-page">
+
+  <div class="login-card">
+    <div class="logo">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#0098f7" />
+        <path d="M8 10h16M8 16h10M8 22h13" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+      <span>Collaborative Plugin</span>
+    </div>
+
+    <div class="step-indicator">
+      <span class="step-dot active"></span>
+      <span class="step-line"><span class="step-line-fill" id="step-line-fill"></span></span>
+      <span class="step-dot" id="dot-2"></span>
+    </div>
+
+    <form id="user-form" novalidate>
+
+      <!-- ── Step 1: User details ── -->
+      <div id="step-1">
+        <h1>Join the editor</h1>
+        <p class="subtitle">Enter your details to start collaborating.</p>
+
+        <div class="form-group">
+          <label for="input-name">Your name</label>
+          <input type="text" id="input-name" name="name" placeholder="e.g. Jane Doe" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>Your role</label>
+          <div class="role-options">
+            <div class="role-option">
+              <input type="radio" name="role" id="role-editor" value="editor" checked>
+              <label for="role-editor">
+                <span class="role-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path
+                      d="M1.5 12H2.56875L9.9 4.66875L8.83125 3.6L1.5 10.9313V12ZM0.75 13.5C0.5375 13.5 0.359375 13.4281 0.215625 13.2844C0.071875 13.1406 0 12.9625 0 12.75V10.9313C0 10.7313 0.0375 10.5406 0.1125 10.3594C0.1875 10.1781 0.29375 10.0188 0.43125 9.88125L9.9 0.43125C10.05 0.29375 10.2156 0.1875 10.3969 0.1125C10.5781 0.0375 10.7688 0 10.9688 0C11.1688 0 11.3625 0.0375 11.55 0.1125C11.7375 0.1875 11.9 0.3 12.0375 0.45L13.0688 1.5C13.2188 1.6375 13.3281 1.8 13.3969 1.9875C13.4656 2.175 13.5 2.3625 13.5 2.55C13.5 2.75 13.4656 2.94063 13.3969 3.12188C13.3281 3.30313 13.2188 3.46875 13.0688 3.61875L3.61875 13.0688C3.48125 13.2063 3.32188 13.3125 3.14063 13.3875C2.95938 13.4625 2.76875 13.5 2.56875 13.5H0.75ZM9.35625 4.14375L8.83125 3.6L9.9 4.66875L9.35625 4.14375Z"
+                      fill="#999999" />
+                  </svg>
+                </span>
+                Editor
+              </label>
+            </div>
+            <div class="role-option">
+              <input type="radio" name="role" id="role-suggester" value="suggester">
+              <label for="role-suggester">
+                <span class="role-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path
+                      d="M5.25 10.5H6.46875C6.56875 10.5 6.66563 10.4812 6.75938 10.4437C6.85313 10.4062 6.9375 10.35 7.0125 10.275L10.5375 6.75C10.65 6.6375 10.7344 6.50937 10.7906 6.36562C10.8469 6.22187 10.875 6.08125 10.875 5.94375C10.875 5.80625 10.8438 5.67187 10.7812 5.54062C10.7188 5.40937 10.6375 5.2875 10.5375 5.175L9.8625 4.4625C9.75 4.35 9.625 4.26562 9.4875 4.20937C9.35 4.15312 9.20625 4.125 9.05625 4.125C8.91875 4.125 8.77813 4.15312 8.63438 4.20937C8.49063 4.26562 8.3625 4.35 8.25 4.4625L4.725 7.9875C4.65 8.0625 4.59375 8.14687 4.55625 8.24062C4.51875 8.33437 4.5 8.43125 4.5 8.53125V9.75C4.5 9.9625 4.57188 10.1406 4.71563 10.2844C4.85938 10.4281 5.0375 10.5 5.25 10.5ZM5.625 9.375V8.6625L7.51875 6.76875L7.89375 7.10625L8.23125 7.48125L6.3375 9.375H5.625ZM7.89375 7.10625L8.23125 7.48125L7.51875 6.76875L7.89375 7.10625ZM8.38125 10.5H12.75C12.9625 10.5 13.1406 10.4281 13.2844 10.2844C13.4281 10.1406 13.5 9.9625 13.5 9.75C13.5 9.5375 13.4281 9.35937 13.2844 9.21562C13.1406 9.07187 12.9625 9 12.75 9H9.88125L8.38125 10.5ZM4.5 13.5L2.775 15.225C2.5375 15.4625 2.26563 15.5156 1.95938 15.3844C1.65312 15.2531 1.5 15.0187 1.5 14.6812V3C1.5 2.5875 1.64687 2.23437 1.94063 1.94062C2.23438 1.64687 2.5875 1.5 3 1.5H15C15.4125 1.5 15.7656 1.64687 16.0594 1.94062C16.3531 2.23437 16.5 2.5875 16.5 3V12C16.5 12.4125 16.3531 12.7656 16.0594 13.0594C15.7656 13.3531 15.4125 13.5 15 13.5H4.5ZM3.8625 12H15V3H3V12.8437L3.8625 12Z"
+                      fill="#999999" />
+                  </svg>
+                </span>
+                Suggester
+              </label>
+            </div>
+            <div class="role-option">
+              <input type="radio" name="role" id="role-viewer" value="viewer">
+              <label for="role-viewer">
+                <span class="role-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path
+                      d="M11.3875 11.0156C12.0437 10.3594 12.3719 9.5625 12.3719 8.625C12.3719 7.6875 12.0437 6.89063 11.3875 6.23438C10.7312 5.57812 9.93437 5.25 8.99687 5.25C8.05937 5.25 7.2625 5.57812 6.60625 6.23438C5.95 6.89063 5.62187 7.6875 5.62187 8.625C5.62187 9.5625 5.95 10.3594 6.60625 11.0156C7.2625 11.6719 8.05937 12 8.99687 12C9.93437 12 10.7312 11.6719 11.3875 11.0156ZM7.5625 10.0594C7.16875 9.66563 6.97187 9.1875 6.97187 8.625C6.97187 8.0625 7.16875 7.58438 7.5625 7.19063C7.95625 6.79688 8.43437 6.6 8.99687 6.6C9.55937 6.6 10.0375 6.79688 10.4312 7.19063C10.825 7.58438 11.0219 8.0625 11.0219 8.625C11.0219 9.1875 10.825 9.66563 10.4312 10.0594C10.0375 10.4531 9.55937 10.65 8.99687 10.65C8.43437 10.65 7.95625 10.4531 7.5625 10.0594ZM4.4125 12.9C3.03125 12 1.94062 10.8125 1.14062 9.3375C1.07812 9.225 1.03125 9.10938 1 8.99063C0.96875 8.87188 0.953125 8.75 0.953125 8.625C0.953125 8.5 0.96875 8.37813 1 8.25938C1.03125 8.14062 1.07812 8.025 1.14062 7.9125C1.94062 6.4375 3.03125 5.25 4.4125 4.35C5.79375 3.45 7.32187 3 8.99687 3C10.6719 3 12.2 3.45 13.5812 4.35C14.9625 5.25 16.0531 6.4375 16.8531 7.9125C16.9156 8.025 16.9625 8.14062 16.9937 8.25938C17.025 8.37813 17.0406 8.5 17.0406 8.625C17.0406 8.75 17.025 8.87188 16.9937 8.99063C16.9625 9.10938 16.9156 9.225 16.8531 9.3375C16.0531 10.8125 14.9625 12 13.5812 12.9C12.2 13.8 10.6719 14.25 8.99687 14.25C7.32187 14.25 5.79375 13.8 4.4125 12.9ZM12.8875 11.6344C14.0687 10.8906 14.9719 9.8875 15.5969 8.625C14.9719 7.3625 14.0687 6.35938 12.8875 5.61563C11.7062 4.87188 10.4094 4.5 8.99687 4.5C7.58437 4.5 6.2875 4.87188 5.10625 5.61563C3.925 6.35938 3.02187 7.3625 2.39687 8.625C3.02187 9.8875 3.925 10.8906 5.10625 11.6344C6.2875 12.3781 7.58437 12.75 8.99687 12.75C10.4094 12.75 11.7062 12.3781 12.8875 11.6344Z"
+                      fill="#999999" />
+                  </svg>
+                </span>
+                Viewer
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-room">Room name</label>
+          <input type="text" id="input-room" name="room" value="demo-room" placeholder="demo-room">
+        </div>
+
+        <button type="button" id="btn-next" class="btn-primary">Next →</button>
+      </div>
+
+      <!-- ── Step 2: Editor options ── -->
+      <div id="step-2" hidden>
+        <h1>Editor options</h1>
+        <p class="subtitle">Configure your collaboration session.</p>
+
+        <div class="form-group">
+          <label>Collaboration mode</label>
+          <div class="role-options">
+            <div class="role-option">
+              <input type="radio" name="mode" id="mode-realtime" value="realtime" checked>
+              <label for="mode-realtime">Real-time</label>
+            </div>
+            <div class="role-option">
+              <input type="radio" name="mode" id="mode-async" value="async">
+              <label for="mode-async">Asynchronous</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="option-group">
+          <div class="form-group toggle-row">
+            <span class="toggle-label">Version history</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-version-history">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="form-group toggle-row">
+            <span class="toggle-label">Auto-save</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-autosave" disabled>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="form-group" id="group-autosave-interval" hidden>
+            <label for="input-autosave-interval">Auto-save interval (ms)</label>
+            <input type="number" id="input-autosave-interval" value="300000" min="5000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mentionable users</label>
+          <div class="mention-add-row">
+            <input type="text" id="input-mention-name" placeholder="e.g. Jane Doe" autocomplete="off">
+            <button type="button" id="btn-add-mention" class="btn-add">Add</button>
+          </div>
+          <ul id="mention-list" class="mention-list"></ul>
+        </div>
+
+        <div class="step-nav">
+          <button type="button" id="btn-back" class="btn-secondary">← Back</button>
+          <button type="submit" class="btn-primary">Start editing →</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+  <script>
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const dot2 = document.getElementById('dot-2');
+    const lineFill = document.getElementById('step-line-fill');
+
+    document.getElementById('btn-next').addEventListener('click', function () {
+      const name = document.getElementById('input-name').value.trim();
+      if (!name) { document.getElementById('input-name').focus(); return; }
+      step1.hidden = true;
+      step2.hidden = false;
+      dot2.classList.add('active');
+      lineFill.style.width = '100%';
+    });
+
+    document.getElementById('btn-back').addEventListener('click', function () {
+      step2.hidden = true;
+      step1.hidden = false;
+      dot2.classList.remove('active');
+      lineFill.style.width = '0%';
+    });
+
+    document.getElementById('toggle-version-history').addEventListener('change', function () {
+      const autoSave = document.getElementById('toggle-autosave');
+      autoSave.disabled = !this.checked;
+      if (!this.checked) {
+        autoSave.checked = false;
+        document.getElementById('group-autosave-interval').hidden = true;
+      }
+    });
+
+    document.getElementById('toggle-autosave').addEventListener('change', function () {
+      document.getElementById('group-autosave-interval').hidden = !this.checked;
+    });
+
+    function addMentionUser(name) {
+      const li = document.createElement('li');
+      li.className = 'mention-item';
+      li.dataset.name = name;
+      li.innerHTML = `<span>${name}</span><button type="button" class="btn-remove-mention" aria-label="Remove">&times;</button>`;
+      li.querySelector('.btn-remove-mention').addEventListener('click', () => li.remove());
+      document.getElementById('mention-list').appendChild(li);
+    }
+
+    document.getElementById('btn-add-mention').addEventListener('click', function () {
+      const input = document.getElementById('input-mention-name');
+      const name = input.value.trim();
+      if (!name) return;
+      addMentionUser(name);
+      input.value = '';
+      input.focus();
+    });
+
+    document.getElementById('input-mention-name').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('btn-add-mention').click(); }
+    });
+  </script>
+
+</body>
+
+</html>
