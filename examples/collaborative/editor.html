@@ -179,18 +179,19 @@
           }))
         : [];
 
-      const collabOptions = {
+      const collabConfig = {
         enabled: true,
         user: { id: user.id, name: user.name, role: user.role },
-        room,
-        backendUrl,
+        docId: room,
+        commentsUrl: `${backendUrl}/collab/${room}/comments`,
+        suggestionsUrl: `${backendUrl}/collab/${room}/suggestions`,
         ...(mentionableUsers.length ? { mentionableUsers } : {})
       };
 
-      const editorConfig = { height: 600, collabOptions };
+      const editorConfig = { height: 600, collabConfig };
 
       if (mode === 'realtime') {
-        editorConfig.realTimeConfig = { syncUrl };
+        collabConfig.realTime = { syncUrl };
       } else {
         editorConfig.saveURL = `/collab/${room}/content`;
         editorConfig.saveInterval = 10000;
@@ -206,9 +207,10 @@
       }
 
       if (versionHistory) {
-        editorConfig.versionHistoryOptions = {
+        collabConfig.versionControl = {
           enabled: true,
           autoSaveEnabled: autoSave,
+          url: `${backendUrl}/collab/${room}/versions`,
           ...(autoSave ? { autoSaveInterval } : {})
         };
       }
