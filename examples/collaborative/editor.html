@@ -47,9 +47,6 @@
       src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism.min.css">
 
-    <!-- Include Froala Editor -->
-    <script src="/bower_components/froala-wysiwyg-editor/js/froala_editor.min.js"></script>
-
     <script type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script type="text/javascript"
@@ -201,7 +198,7 @@
             fetch(`${backendUrl}/collab/${docId}/content`)
               .then(res => res.ok ? res.json() : null)
               .then(data => { if (data && data.content) editor.html.set(data.content); })
-              .catch(() => {});
+              .catch((err) => { console.error('[collab] Failed to restore content:', err); });
           }
         };
       }

@@ -13,6 +13,8 @@ var AsyncSave = FroalaEditor.AsyncSave;
 
 // Permissive CORS for the dev environment so the editor's webpack dev server
 // (port 8001) can hit the SDK's REST endpoints (port 3000).
+// eslint-disable-next-line no-console
+console.warn('[collab] WARNING: CORS is open (*) and routes have no authentication. Do not use this configuration in production.');
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
