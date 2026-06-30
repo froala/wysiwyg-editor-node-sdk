@@ -123,7 +123,7 @@
         <path d="M8 10h16M8 16h10M8 22h13" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
       </svg>
       <span class="app-name">Collaborative Plugin</span>
-      <span class="room-badge" id="room-badge">room</span>
+      <span class="room-badge" id="room-badge">docId</span>
     </div>
 
     <div class="user-chip" id="user-chip">
@@ -148,9 +148,9 @@
         name: params.get('name') || 'Guest',
         role: params.get('role') || 'editor'
       };
-      const room = params.get('room') || 'demo-room';
+      const docId = params.get('docId') || 'demo-doc';
 
-      document.getElementById('room-badge').textContent = room;
+      document.getElementById('room-badge').textContent = docId;
       document.getElementById('user-name-display').textContent = user.name;
       document.getElementById('user-role-display').textContent = user.role;
 
@@ -182,9 +182,9 @@
       const collabConfig = {
         enabled: true,
         user: { id: user.id, name: user.name, role: user.role },
-        docId: room,
-        commentsUrl: `${backendUrl}/collab/${room}/comments`,
-        suggestionsUrl: `${backendUrl}/collab/${room}/suggestions`,
+        docId: docId,
+        commentsUrl: `${backendUrl}/collab/${docId}/comments`,
+        suggestionsUrl: `${backendUrl}/collab/${docId}/suggestions`,
         ...(mentionableUsers.length ? { mentionableUsers } : {})
       };
 
@@ -193,12 +193,12 @@
       if (mode === 'realtime') {
         collabConfig.realTime = { syncUrl };
       } else {
-        editorConfig.saveURL = `/collab/${room}/content`;
+        editorConfig.saveURL = `/collab/${docId}/content`;
         editorConfig.saveInterval = 10000;
         editorConfig.events = {
           initialized: function () {
             const editor = this;
-            fetch(`${backendUrl}/collab/${room}/content`)
+            fetch(`${backendUrl}/collab/${docId}/content`)
               .then(res => res.ok ? res.json() : null)
               .then(data => { if (data && data.content) editor.html.set(data.content); })
               .catch(() => {});
@@ -210,7 +210,7 @@
         collabConfig.versionControl = {
           enabled: true,
           autoSaveEnabled: autoSave,
-          url: `${backendUrl}/collab/${room}/versions`,
+          url: `${backendUrl}/collab/${docId}/versions`,
           ...(autoSave ? { autoSaveInterval } : {})
         };
       }

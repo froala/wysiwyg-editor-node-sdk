@@ -13,7 +13,7 @@ document.getElementById('user-form').addEventListener('submit', (e) => {
   }
 
   const role = document.querySelector('input[name="role"]:checked').value;
-  const room = document.getElementById('input-room').value.trim() || 'demo-room';
+  const docId = document.getElementById('input-docId').value.trim() || 'demo-doc';
   const id = generateId(name);
   const mode = document.querySelector('input[name="mode"]:checked').value;
   const versionHistory = document.getElementById('toggle-version-history').checked;
@@ -22,7 +22,7 @@ document.getElementById('user-form').addEventListener('submit', (e) => {
   const mentionUsers = [...document.querySelectorAll('#mention-list .mention-item')]
     .map(li => li.dataset.name).join(',');
 
-  const params = new URLSearchParams({ id, name, role, room, mode });
+  const params = new URLSearchParams({ id, name, role, docId, mode });
   if (versionHistory) params.set('versionHistory', '1');
   if (autoSave) params.set('autoSave', '1');
   if (autoSave && autoSaveInterval) params.set('autoSaveInterval', autoSaveInterval);
