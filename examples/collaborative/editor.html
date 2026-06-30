@@ -168,7 +168,7 @@
       const syncUrl = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`;
 
       const mode = params.get('mode') || 'realtime';
-      const versionHistory = params.get('versionHistory') === '1';
+      const versionControl = params.get('versionControl') === '1';
       const autoSave = params.get('autoSave') === '1';
       const autoSaveInterval = parseInt(params.get('autoSaveInterval')) || 300000;
       const mentionUsersParam = params.get('mentionUsers');
@@ -206,7 +206,7 @@
         };
       }
 
-      if (versionHistory) {
+      if (versionControl) {
         collabConfig.versionControl = {
           enabled: true,
           autoSaveEnabled: autoSave,

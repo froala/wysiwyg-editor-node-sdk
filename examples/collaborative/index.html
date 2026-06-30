@@ -111,9 +111,9 @@
 
         <div class="option-group">
           <div class="form-group toggle-row">
-            <span class="toggle-label">Version history</span>
+            <span class="toggle-label">Version control</span>
             <label class="toggle-switch">
-              <input type="checkbox" id="toggle-version-history">
+              <input type="checkbox" id="toggle-version-control">
               <span class="toggle-track"></span>
             </label>
           </div>
@@ -171,7 +171,7 @@
       lineFill.style.width = '0%';
     });
 
-    document.getElementById('toggle-version-history').addEventListener('change', function () {
+    document.getElementById('toggle-version-control').addEventListener('change', function () {
       const autoSave = document.getElementById('toggle-autosave');
       autoSave.disabled = !this.checked;
       if (!this.checked) {

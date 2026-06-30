@@ -8,7 +8,7 @@ var gm = require('gm').subClass({imageMagick: true});
 var FroalaEditor = require('../lib/froalaEditor.js');
 var Collaborative = FroalaEditor.Collaborative;
 var CollabPersistence = FroalaEditor.CollabPersistence;
-var VersionHistory = FroalaEditor.VersionHistory;
+var VersionControl = FroalaEditor.VersionControl;
 var AsyncSave = FroalaEditor.AsyncSave;
 
 // Permissive CORS for the dev environment so the editor's webpack dev server
@@ -29,8 +29,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Attach suggestion + comment persistence routes.
 CollabPersistence.attachRoutes(app, { dbPath: path.join(__dirname, '..', 'collab.db') });
 
-// Attach version history routes (same SQLite file).
-VersionHistory.attachRoutes(app, { dbPath: path.join(__dirname, '..', 'collab.db') });
+// Attach version control routes (same SQLite file).
+VersionControl.attachRoutes(app, { dbPath: path.join(__dirname, '..', 'collab.db') });
 
 // Attach async-save routes — persists the latest editor content per room
 // when the editor runs in async mode (no realTimeConfig.syncUrl).
@@ -226,7 +226,7 @@ app.get('/health', function (req, res) {
 });
 
 // Wrap Express in a plain HTTP server so the WebSocket relay can share the port.
-// Clients connect to:  ws://localhost:3000/<roomName>
+// Clients connect to:  ws://localhost:3000/<docId>
 var server = http.createServer(app);
 Collaborative.attachToServer(server);
 

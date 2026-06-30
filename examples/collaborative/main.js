@@ -16,14 +16,14 @@ document.getElementById('user-form').addEventListener('submit', (e) => {
   const docId = document.getElementById('input-docId').value.trim() || 'demo-doc';
   const id = generateId(name);
   const mode = document.querySelector('input[name="mode"]:checked').value;
-  const versionHistory = document.getElementById('toggle-version-history').checked;
-  const autoSave = versionHistory && document.getElementById('toggle-autosave').checked;
+  const versionControl = document.getElementById('toggle-version-control').checked;
+  const autoSave = versionControl && document.getElementById('toggle-autosave').checked;
   const autoSaveInterval = document.getElementById('input-autosave-interval').value;
   const mentionUsers = [...document.querySelectorAll('#mention-list .mention-item')]
     .map(li => li.dataset.name).join(',');
 
   const params = new URLSearchParams({ id, name, role, docId, mode });
-  if (versionHistory) params.set('versionHistory', '1');
+  if (versionControl) params.set('versionControl', '1');
   if (autoSave) params.set('autoSave', '1');
   if (autoSave && autoSaveInterval) params.set('autoSaveInterval', autoSaveInterval);
   if (mentionUsers) params.set('mentionUsers', mentionUsers);
