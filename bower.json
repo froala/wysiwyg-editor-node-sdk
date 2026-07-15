@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg-editor-node-sdk",
-  "version": "5.3.0",
+  "version": "5.3.1",
   "author": "Florin Marius Popescu <florin@froala.com> (https://www.froala.com/)",
   "description": "Node.js SDK for Froala Editor",
   "keywords": [
