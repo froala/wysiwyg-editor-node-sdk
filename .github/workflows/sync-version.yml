@@ -107,7 +107,7 @@ jobs:
             echo "No commits between $BRANCH and master. Skipping PR creation."
             exit 0
           fi
-          PR_BODY=$(printf "## Release Notes (from primary repo)\n\n%s\n" "$RELEASE_NOTES")
+          PR_BODY=$(printf "%s\n" "$RELEASE_NOTES")
           gh pr create \
             --base master \
             --head "$BRANCH" \
