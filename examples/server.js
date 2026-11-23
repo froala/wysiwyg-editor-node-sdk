@@ -4,7 +4,7 @@ var app = express();
 var bodyParser = require('body-parser')
 var path = require('path');
 var fs = require('fs');
-var gm = require('gm').subClass({imageMagick: true});
+var sharp = require('sharp');
 var FroalaEditor = require('../lib/froalaEditor.js');
 var Collaborative = FroalaEditor.Collaborative;
 var CollabPersistence = FroalaEditor.CollabPersistence;
@@ -85,13 +85,9 @@ app.post('/upload_image_validation', function (req, res) {
     fieldname: 'myImage',
     validation: function(filePath, mimetype, callback) {
 
-      gm(filePath).size(function(err, value){
+      sharp(filePath).metadata().then(function(value) {
 
-        if (err) {
-          return callback(err);
-        }
-
-        if (!value) {
+        if (!value || !value.width) {
           return callback('Error occurred.');
         }
 
@@ -99,6 +95,8 @@ app.post('/upload_image_validation', function (req, res) {
           return callback(null, false);
         }
         return callback(null, true);
+      }, function(err) {
+        return callback(err.message);
       });
     }
   }
