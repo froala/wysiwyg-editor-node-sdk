@@ -7,7 +7,9 @@
 Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor) server side integration in Node.JS projects.
 
 ## Prerequisite
-1. ImageMagick must be installed.
+1. Node.js 20.9 or later.
+
+Image resizing uses [sharp](https://sharp.pixelplumbing.com), which installs prebuilt binaries, so ImageMagick and GraphicsMagick aren't needed.
 
 ## Installation
 
@@ -26,6 +28,28 @@ Easing the [Froala WYSIWYG HTML Editor](https://github.com/froala/wysiwyg-editor
 ```javascript
 var FroalaEditor = require('path/to/lib/froalaEditor.js');
 ```
+
+## Resizing images on upload
+
+Pass `resize` to `FroalaEditor.Image.upload` to resize an image as it's saved. SVG files are never resized.
+
+```javascript
+FroalaEditor.Image.upload(req, '/uploads/', { resize: [300, 300] }, function (err, data) {
+  // ...
+});
+```
+
+`resize` is `[width, height, flag]`. Without a flag the image fits inside the box and keeps its aspect ratio. Either size can be `null` to scale by the other.
+
+| Flag | Result |
+|---|---|
+| none | Fit inside the box, keep the aspect ratio |
+| `'!'` | Exactly `width`×`height` |
+| `'^'` | Cover the box, keep the aspect ratio |
+| `'>'` | Only shrink images larger than the box |
+| `'<'` | Only enlarge images smaller than the box |
+
+The `%` and `@` flags aren't supported and return "Unsupported resize option". If an image can't be read, `upload` returns an error and nothing is saved.
 
 ## Documentation
 
