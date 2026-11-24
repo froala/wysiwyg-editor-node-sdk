@@ -29,28 +29,6 @@ Image resizing uses [sharp](https://sharp.pixelplumbing.com), which installs pre
 var FroalaEditor = require('path/to/lib/froalaEditor.js');
 ```
 
-## Resizing images on upload
-
-Pass `resize` to `FroalaEditor.Image.upload` to resize an image as it's saved. SVG files are never resized.
-
-```javascript
-FroalaEditor.Image.upload(req, '/uploads/', { resize: [300, 300] }, function (err, data) {
-  // ...
-});
-```
-
-`resize` is `[width, height, flag]`. Without a flag the image fits inside the box and keeps its aspect ratio. Either size can be `null` to scale by the other.
-
-| Flag | Result |
-|---|---|
-| none | Fit inside the box, keep the aspect ratio |
-| `'!'` | Exactly `width`×`height` |
-| `'^'` | Cover the box, keep the aspect ratio |
-| `'>'` | Only shrink images larger than the box |
-| `'<'` | Only enlarge images smaller than the box |
-
-The `%` and `@` flags aren't supported and return "Unsupported resize option". If an image can't be read, `upload` returns an error and nothing is saved.
-
 ## Documentation
 
  * [Official documentation](https://www.froala.com/wysiwyg-editor/docs/sdks/nodejs)
